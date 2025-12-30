@@ -5,234 +5,307 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para Cristina Jamile ❤️</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;500&display=swap');
 
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
             height: 100vh;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Montserrat', sans-serif;
+            transition: background 2s ease;
         }
 
-        .container {
+        /* --- ESTILOS POR HORA DEL DÍA (Fondos) --- */
+        /* Mañana (6am - 5pm): Claro, rosado, fresco */
+        body.morning {
+            background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+        }
+        /* Tarde (5pm - 8pm): Atardecer, naranja, romántico */
+        body.sunset {
+            background: linear-gradient(to right, #fa709a 0%, #fee140 100%);
+        }
+        /* Noche (8pm - 6am): Oscuro, elegante, misterioso */
+        body.night {
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+        }
+
+        /* --- TARJETA DE CRISTAL --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 40px 20px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.85);
-            padding: 40px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(214, 51, 132, 0.2);
+            max-width: 90%;
+            width: 350px;
             position: relative;
             z-index: 10;
-            border: 2px solid #fff;
-            max-width: 90%;
+            color: #fff;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
+        /* Ajustes de texto para que se lea bien siempre */
+        body.morning .glass-card { color: #555; text-shadow: none; background: rgba(255,255,255,0.7); }
+        
         h1 {
-            font-family: 'Dancing Script', cursive;
-            color: #d63384;
+            font-family: 'Great Vibes', cursive;
             font-size: 3.5rem;
-            margin: 0;
+            margin: 10px 0;
             line-height: 1.2;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
-        p.subtitle {
-            color: #555;
-            font-size: 1.2rem;
-            margin-top: 15px;
-        }
-
-        /* El corazón principal ahora es clickable */
-        .heart-beat-container {
-            cursor: pointer;
+        .counter-badge {
+            background: rgba(255,255,255,0.9);
+            color: #d63384;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             display: inline-block;
-            transition: transform 0.3s ease;
-        }
-        
-        .heart-beat-container:hover {
-            transform: scale(1.1);
-        }
-
-        .heart-beat {
-            font-size: 5rem;
-            color: #ff3366;
-            animation: beat 1s infinite alternate;
-            margin: 20px 0;
-            filter: drop-shadow(0 0 10px rgba(255, 51, 102, 0.6));
-        }
-        
-        .click-hint {
-            font-size: 0.8rem;
-            color: #d63384;
-            margin-top: -15px;
-            margin-bottom: 20px;
-            opacity: 0.7;
-        }
-
-        @keyframes beat {
-            to { transform: scale(1.15); }
-        }
-
-        /* --- Estilos para la ventana emergente (Modal) --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7); /* Fondo oscuro semi-transparente */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s ease;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 35px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 85%;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-            position: relative;
-            border: 3px solid #ffccd5;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: translateY(0);
-        }
-
-        .modal-title {
-            font-family: 'Dancing Script', cursive;
-            color: #d63384;
-            font-size: 2.5rem;
             margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .modal-text {
+        .phrase-box {
+            font-style: italic;
             font-size: 1.1rem;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .modal-emojis {
-            font-size: 2.5rem;
+            min-height: 60px;
             margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.8rem;
-            color: #aaa;
+        /* --- ICONO CENTRAL INTERACTIVO --- */
+        .magic-icon {
+            font-size: 5rem;
             cursor: pointer;
-            transition: color 0.3s;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            user-select: none;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
         }
-        .close-btn:hover {
-            color: #d63384;
-        }
+        .magic-icon:hover { transform: scale(1.2); }
+        .magic-icon:active { transform: scale(0.9) rotate(360deg); }
 
-        /* --- Lluvia de corazones (Fondo) --- */
-        .falling-heart {
+        .hint { font-size: 0.7rem; opacity: 0.8; margin-bottom: 10px; }
+
+        /* --- SISTEMA DE PARTÍCULAS (Animaciones Variadas) --- */
+        .particle {
             position: fixed;
-            top: -10vh;
-            color: #ff8fa3;
-            font-size: 1.5rem;
-            animation: fall linear forwards;
+            pointer-events: none;
             z-index: 1;
-            opacity: 0.6;
         }
 
+        /* Animación 1: Caída (Lluvia) */
         @keyframes fall {
             to { transform: translateY(110vh) rotate(360deg); }
         }
+        /* Animación 2: Subida (Burbujas) */
+        @keyframes rise {
+            to { transform: translateY(-110vh) scale(1.5); opacity: 0; }
+        }
+        /* Animación 3: Flotar (Nubes/Sueños) */
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 20px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* --- MODAL SORPRESA --- */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 100;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.5s;
+        }
+        .modal.active { opacity: 1; pointer-events: all; }
+        .modal-body {
+            background: white; color: #333; padding: 30px; border-radius: 20px;
+            text-align: center; max-width: 80%; transform: scale(0.5); transition: 0.5s;
+        }
+        .modal.active .modal-body { transform: scale(1); }
+        .close-modal {
+            margin-top: 15px; background: #ff4757; color: white; border: none;
+            padding: 10px 20px; border-radius: 50px; font-weight: bold; cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="heart-beat-container" id="mainHeartBtn">
-            <div class="heart-beat">❤️</div>
+    <div class="glass-card">
+        <div id="dayCounter" class="counter-badge">Día 1</div>
+        
+        <div id="mainIcon" class="magic-icon">❤️</div>
+        <div class="hint">(Tócame)</div>
+
+        <h1>Cristina Jamile</h1>
+        
+        <div id="dailyMessage" class="phrase-box">
+            Calculando nuestro amor...
         </div>
-        <p class="click-hint">(Haz clic en el corazón)</p>
-        <h1>Te Amo<br>Cristina Jamile</h1>
-        <p class="subtitle">Eres mi persona favorita en el mundo.</p>
     </div>
 
-    <div class="modal-overlay" id="secretModal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeModalBtn">&times;</span>
-            <h2 class="modal-title">¡Mi sorpresa para ti!</h2>
-            <p class="modal-text">
-                Quería recordarte que cada latido de este corazón digital es por ti. Gracias por hacer mis días más felices y mi mundo más bonito con solo existir.
-            </p>
-            <div class="modal-emojis">
-                🥰🌹✨💖💑
-            </div>
+    <div class="modal" id="surpriseModal">
+        <div class="modal-body">
+            <h2 id="modalTitle">¡Sorpresa! 🎁</h2>
+            <p id="modalText">Eres lo mejor que me ha pasado.</p>
+            <button class="close-modal" onclick="closeModal()">Te amo</button>
         </div>
     </div>
 
     <script>
-        // 1. Script para la lluvia de corazones (fondo)
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('falling-heart');
-            heart.innerHTML = ['❤️', '💖', '🌸', '✨'][Math.floor(Math.random() * 4)]; // Variedad de iconos
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 3 + 's'; // Más lento y suave
-            heart.style.fontSize = Math.random() * 15 + 10 + 'px';
+        // ==========================================
+        // 1. CONFIGURACIÓN DE FECHA (IMPORTANTE)
+        // ==========================================
+        // Cambia esto a la fecha de inicio.
+        // new Date(AÑO, MES-1, DÍA) -> Enero es 0, Diciembre es 11.
+        const startDate = new Date(2025, 11, 29); 
+
+        // ==========================================
+        // 2. BASE DE DATOS DE AMOR
+        // ==========================================
+        
+        // Frases para el texto principal (Se rotan cada día)
+        const phrases = [
+            "Eres la razón por la que sonrío al ver el celular.",
+            "Mi lugar favorito es dentro de tus abrazos.",
+            "Contigo, cada día es San Valentín.",
+            "No necesito pedir deseos, ya te tengo a ti.",
+            "Eres el verso más bonito de mi poema favorito.",
+            "Me gustas más que el café por las mañanas.",
+            "Tu amor es mi motor para ser mejor cada día.",
+            "Eres mi notificación favorita.",
+            "El mundo es más bonito cuando estás tú.",
+            "Te elijo hoy, mañana y siempre, Cristina."
+        ];
+
+        // Mensajes secretos para el Modal (Se rotan cada día)
+        const secrets = [
+            "PD: Me encantas cuando te ríes. 😍",
+            "Hoy te quiero un poquito más que ayer. 📈",
+            "Solo quería recordarte que eres hermosa. 🌹",
+            "Gracias por existir y estar en mi vida. ✨",
+            "Mándame una foto tuya, te extraño. 📸"
+        ];
+
+        // Iconos centrales que cambian cada día
+        const icons = ['❤️', '🌹', '🧸', '💌', '💍', '✨', '😻', '🦄'];
+
+        // Elementos que caen/vuelan (Partículas)
+        const particles = ['💖', '🌸', '🦋', '⭐', '🍃', '❄️', '🔥', '🍬'];
+
+        // ==========================================
+        // 3. LÓGICA DEL PROGRAMA
+        // ==========================================
+
+        function init() {
+            const now = new Date();
             
-            document.body.appendChild(heart);
+            // --- A. LÓGICA DE TIEMPO (HORA DEL DÍA) ---
+            const hour = now.getHours();
+            const body = document.body;
+            
+            // Eliminar clases anteriores
+            body.classList.remove('morning', 'sunset', 'night');
 
-            setTimeout(() => {
-                heart.remove();
-            }, 6000);
+            if (hour >= 6 && hour < 17) {
+                body.classList.add('morning'); // Día
+            } else if (hour >= 17 && hour < 20) {
+                body.classList.add('sunset'); // Atardecer
+            } else {
+                body.classList.add('night'); // Noche
+            }
+
+            // --- B. LÓGICA DE DÍAS (CUENTA) ---
+            const diffTime = Math.abs(now - startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            
+            // Asegurar que empiece en 1
+            const dayNumber = diffDays > 0 ? diffDays : 1;
+
+            // --- C. SELECCIÓN DE CONTENIDO BASADO EN EL DÍA ---
+            // Usamos el operador % para rotar infinitamente las listas
+            const phraseIndex = (dayNumber - 1) % phrases.length;
+            const secretIndex = (dayNumber - 1) % secrets.length;
+            const iconIndex = (dayNumber - 1) % icons.length;
+            const particleIndex = (dayNumber - 1) % particles.length;
+            
+            // Insertar textos
+            document.getElementById('dayCounter').innerText = `Día ${dayNumber} Juntos`;
+            document.getElementById('dailyMessage').innerText = phrases[phraseIndex];
+            document.getElementById('modalText').innerText = secrets[secretIndex];
+            document.getElementById('mainIcon').innerText = icons[iconIndex];
+
+            // --- D. ANIMACIÓN ÚNICA POR DÍA ---
+            // Determina el tipo de animación (0=Caer, 1=Subir, 2=Flotar)
+            const animationType = dayNumber % 3; 
+            const particleChar = particles[particleIndex];
+
+            startParticleSystem(particleChar, animationType);
         }
-        setInterval(createHeart, 400);
 
+        // --- SISTEMA DE PARTÍCULAS ---
+        function startParticleSystem(char, type) {
+            setInterval(() => {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                p.innerText = char;
+                
+                // Aleatoriedad
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                
+                // Configurar animación según el tipo
+                if (type === 0) {
+                    // Caída (Lluvia)
+                    p.style.top = '-10vh';
+                    p.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+                } else if (type === 1) {
+                    // Subida (Burbujas)
+                    p.style.bottom = '-10vh';
+                    p.style.animation = `rise ${Math.random() * 4 + 3}s linear forwards`;
+                } else {
+                    // Flotar aleatorio (Estático/Ambiental)
+                    p.style.top = Math.random() * 100 + 'vh';
+                    p.style.animation = `float ${Math.random() * 5 + 3}s ease-in-out infinite`;
+                    p.style.opacity = Math.random();
+                }
 
-        // 2. Script para la interacción del corazón (Modal)
-        const mainHeartBtn = document.getElementById('mainHeartBtn');
-        const secretModal = document.getElementById('secretModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
+                document.body.appendChild(p);
 
-        // Abrir el modal al hacer clic en el corazón
-        mainHeartBtn.addEventListener('click', () => {
-            secretModal.classList.add('active');
-            // Efecto extra: vibración en el celular si es compatible
-            if (navigator.vibrate) {
-                navigator.vibrate(100);
-            }
+                // Limpiar memoria
+                setTimeout(() => { p.remove(); }, 6000);
+            }, 400); // Frecuencia de creación
+        }
+
+        // --- INTERACCIÓN MODAL ---
+        const modal = document.getElementById('surpriseModal');
+        const mainIcon = document.getElementById('mainIcon');
+
+        mainIcon.addEventListener('click', () => {
+            modal.classList.add('active');
+            // Vibración si es celular
+            if (navigator.vibrate) navigator.vibrate(50);
         });
 
-        // Cerrar el modal con la X
-        closeModalBtn.addEventListener('click', () => {
-            secretModal.classList.remove('active');
-        });
+        function closeModal() {
+            modal.classList.remove('active');
+        }
 
-        // Cerrar el modal si se hace clic fuera de la cajita blanca
-        secretModal.addEventListener('click', (e) => {
-            if (e.target === secretModal) {
-                secretModal.classList.remove('active');
-            }
-        });
+        // Iniciar todo
+        init();
+
     </script>
-
 </body>
 </html>
