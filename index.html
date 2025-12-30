@@ -5,395 +5,494 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Para Cristina Jamile ❤️</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Pacifico&family=Poppins:wght@300;500;700&display=swap');
 
-        /* --- RESET Y BASE --- */
-        * {
-            box-sizing: border-box;
-            /* CRUCIAL: Esto evita que el celular haga zoom o scroll al jugar */
-            touch-action: none; 
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        /* --- BASE --- */
+        * { box-sizing: border-box; touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; }
+        
         body {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh; /* Altura real móvil */
-            overflow: hidden;
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background 1s ease;
+            margin: 0; padding: 0; width: 100vw; height: 100vh; height: 100dvh;
+            overflow: hidden; font-family: 'Poppins', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: background 1s ease; color: #fff;
         }
 
-        /* --- TEMAS DE FONDO --- */
-        body.theme-morning { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
-        body.theme-sunset  { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
-        body.theme-night   { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        /* --- FONDOS --- */
+        body.theme-0 { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); }
+        body.theme-1 { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+        body.theme-2 { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+        body.theme-3 { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
 
-        /* --- CONTENEDOR PRINCIPAL (GLASSMORPHISM) --- */
-        .card {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 25px;
-            padding: 30px;
-            width: 320px;
-            max-width: 90%;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            position: relative;
-            z-index: 10;
-            transition: transform 0.2s;
+        /* --- UI SUPERIOR --- */
+        .game-ui {
+            position: absolute; top: 20px; width: 100%; text-align: center; z-index: 20;
+            pointer-events: none;
         }
 
-        /* Animación de vibración cuando falla */
-        .card.shake { animation: shake 0.5s; }
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            50% { transform: translateX(10px); }
-            75% { transform: translateX(-10px); }
-            100% { transform: translateX(0); }
-        }
-
-        /* --- TEXTOS --- */
-        .badge {
-            background: #fff;
-            color: #ff4757;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-block;
-            margin-bottom: 10px;
+        .day-badge {
+            background: #fff; color: #ff6b81; padding: 5px 20px; border-radius: 30px;
+            font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: inline-block; margin-bottom: 5px;
         }
 
         h1 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.8rem;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            margin: 0 0 20px 0;
-            line-height: 1.1;
+            font-family: 'Pacifico', cursive; font-size: 2rem;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2); margin: 0;
         }
 
-        /* --- BARRA DE PROGRESO (AMOR) --- */
-        .progress-container {
-            width: 100%;
-            background: rgba(255,255,255,0.3);
-            height: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: #ff4757;
-            border-radius: 10px;
-            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .instruction {
+            font-size: 0.9rem; background: rgba(0,0,0,0.25); color: #fff;
+            padding: 4px 15px; border-radius: 10px; display: inline-block; margin-top: 5px;
+            backdrop-filter: blur(5px);
         }
 
-        .status-text {
-            font-size: 0.8rem;
-            color: white;
-            margin-bottom: 20px;
-            min-height: 20px;
+        /* --- ÁREA DE JUEGO --- */
+        #gameArea {
+            width: 100%; height: 100%; position: relative; z-index: 10;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* --- EL BOTÓN QUE HUYE --- */
-        /* Importante: Absolute relativo al body para moverse libremente */
-        .runner-btn {
-            position: fixed; /* Se mueve respecto a la pantalla entera */
-            width: 80px;
-            height: 80px;
-            background: #fff;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2.5rem;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            cursor: pointer;
-            z-index: 1000; /* Siempre encima */
-            user-select: none;
-            transition: transform 0.2s; /* Solo para el efecto pop */
-        }
-        
-        .runner-btn:active { transform: scale(0.9); }
+        /* Elementos Generales de los juegos */
+        .heart-btn { font-size: 4rem; cursor: pointer; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2)); position: absolute; transition: transform 0.1s; }
+        .heart-btn:active { transform: scale(0.9); }
 
-        /* --- MODAL DE VICTORIA --- */
+        /* JUEGO 4: Grid */
+        .grid-container {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
+            background: rgba(255,255,255,0.2); padding: 20px; border-radius: 20px;
+        }
+        .grid-item { font-size: 2.5rem; cursor: pointer; transition: transform 0.2s; }
+        .grid-item:active { transform: scale(0.8); }
+
+        /* JUEGO 7: Math */
+        .math-container { text-align: center; }
+        .math-question { font-size: 2.5rem; font-weight: bold; margin-bottom: 20px; }
+        .options-row { display: flex; gap: 20px; justify-content: center; }
+        .option-btn {
+            background: white; color: #ff6b81; padding: 15px 25px; border-radius: 15px;
+            font-weight: bold; font-size: 1.2rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .option-btn:active { transform: scale(0.95); }
+
+        /* JUEGO 10: Slider */
+        .slider-container { width: 80%; text-align: center; }
+        input[type=range] {
+            width: 100%; -webkit-appearance: none; background: rgba(255,255,255,0.3);
+            height: 15px; border-radius: 10px; outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 40px; height: 40px; background: #fff;
+            border-radius: 50%; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* --- MODAL --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 5000;
+            background: rgba(0,0,0,0.9); z-index: 5000;
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: 0.5s;
         }
         .modal.active { opacity: 1; pointer-events: all; }
-
-        .modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            width: 85%;
-            max-width: 400px;
-            transform: scale(0.8);
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-bottom: 5px solid #ff4757;
+        .modal-card {
+            background: white; width: 85%; max-width: 400px; padding: 30px;
+            border-radius: 25px; text-align: center; transform: scale(0.5); transition: 0.4s;
+            border: 4px solid #ff9a9e; color: #333;
         }
-        .modal.active .modal-content { transform: scale(1); }
-
-        #typewriter-text {
-            font-size: 1.2rem;
-            color: #333;
-            line-height: 1.6;
-            min-height: 100px; /* Evita saltos */
-            white-space: pre-wrap;
-        }
-
-        /* --- FONDO ANIMADO --- */
-        .bg-shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.15);
-            animation: float 10s infinite;
-            z-index: 1;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
+        .modal.active .modal-card { transform: scale(1); }
+        .btn-restart {
+            background: #ff6b81; color: white; border: none; padding: 10px 25px;
+            border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 15px;
         }
 
     </style>
 </head>
 <body>
 
-    <div class="bg-shape" style="width: 200px; height: 200px; top: -50px; left: -50px;"></div>
-    <div class="bg-shape" style="width: 150px; height: 150px; bottom: 20px; right: -30px; animation-delay: 2s;"></div>
-
-    <div class="card" id="mainCard">
-        <div class="badge" id="dayCounter">Cargando...</div>
+    <div class="game-ui">
+        <div id="dayBadge" class="day-badge">Día 1</div>
         <h1>Cristina Jamile</h1>
-        
-        <div class="status-text" id="statusText">Nivel de amor: 0%</div>
-        
-        <div class="progress-container">
-            <div class="progress-bar" id="loveBar"></div>
-        </div>
-
-        <p style="color: white; font-size: 0.9rem; opacity: 0.9; margin-top:30px;">
-            (Atrapa el corazón para desbloquear el mensaje)
-        </p>
+        <div id="instruction" class="instruction">Cargando...</div>
     </div>
 
-    <div id="runner" class="runner-btn" style="visibility: hidden;">❤️</div>
+    <div id="gameArea">
+        </div>
 
     <div class="modal" id="winModal">
-        <div class="modal-content">
-            <h2 style="color: #ff4757; margin-top:0;">¡Lo lograste! 💘</h2>
-            <div id="typewriter-text"></div>
-            <br>
-            <div style="font-size: 3rem;">🥰</div>
+        <div class="modal-card">
+            <h2 style="margin:0; color:#ff6b81;">¡Muy Bien! 💖</h2>
+            <p id="finalMsg" style="font-style:italic; font-size:1.1rem; margin: 20px 0;">...</p>
+            <div style="font-size: 3rem;">🥰💏🎉</div>
+            <button class="btn-restart" onclick="location.reload()">Jugar otro</button>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // 1. CONFIGURACIÓN
-        // ==========================================
-        const startDate = new Date(2025, 11, 29); // 29 de Diciembre 2025
-        const maxAttempts = 5; // Intentos necesarios para llenar la barra
+        // ================= CONFIGURACIÓN =================
+        const startDate = new Date(2025, 11, 29); // 29 Dic 2025
         
-        const dailyMessages = [
-            "Eres el resumen de todo lo que buscaba.",
-            "Mi plan era no enamorarme, pero me sonreíste y lo arruinaste todo (para bien).",
-            "Te quiero no solo por cómo eres, sino por cómo soy yo cuando estoy contigo.",
-            "Eres mi notificación favorita en un día lleno de spam.",
-            "Contigo, el lunes parece viernes.",
-            "Me gustas más que dormir 5 minutos más.",
-            "Eres la coincidencia más bonita de mi vida."
+        const messages = [
+            "Eres mi casualidad favorita.",
+            "Me alegras la vida con solo existir.",
+            "Cada día te quiero un poquito más.",
+            "Eres mi lugar seguro en el mundo.",
+            "Gracias por ser tú, siempre.",
+            "Contigo todo es más bonito.",
+            "Te elijo hoy y siempre.",
+            "Tu sonrisa es mi debilidad.",
+            "Me encantas muchísimo.",
+            "Eres el amor de mi vida."
         ];
 
-        const icons = ['❤️', '✨', '😻', '🌹', '🍓', '🧸'];
+        // Estado del Juego
+        let state = { score: 0, target: 0, active: true };
+        const area = document.getElementById('gameArea');
+        const instr = document.getElementById('instruction');
 
-        // ==========================================
-        // 2. LÓGICA DE INICIO
-        // ==========================================
-        let attempts = 0;
-        let isWin = false;
-
+        // ================= INICIO =================
         function init() {
-            // A. Tema según Hora
-            const hour = new Date().getHours();
-            const body = document.body;
-            body.className = ''; // Limpiar
-            if (hour >= 6 && hour < 17) body.classList.add('theme-morning');
-            else if (hour >= 17 && hour < 20) body.classList.add('theme-sunset');
-            else body.classList.add('theme-night');
-
-            // B. Contador de Días
+            // 1. Calcular Día
             const now = new Date();
             const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-            const dayNum = diff >= 0 ? diff + 1 : 1;
+            let day = diff >= 0 ? diff + 1 : 1;
             
-            document.getElementById('dayCounter').innerText = `Día ${dayNum} Juntos`;
+            // 2. Establecer Tema y Texto
+            document.body.className = `theme-${day % 4}`;
+            document.getElementById('dayBadge').innerText = `Día ${day}`;
 
-            // C. Configurar Icono
-            const iconChar = icons[(dayNum - 1) % icons.length];
-            const runner = document.getElementById('runner');
-            runner.innerText = iconChar;
+            // 3. SELECCIONAR JUEGO (Rotación de 10)
+            const gameIndex = (day - 1) % 10;
+            const games = [
+                playChase,      // 0
+                playRain,       // 1
+                playClicker,    // 2
+                playUnique,     // 3
+                playBalloon,    // 4
+                playWhack,      // 5
+                playMath,       // 6
+                playSequence,   // 7
+                playMemory,     // 8
+                playSlider      // 9
+            ];
 
-            // D. Posicionar Botón Inicialmente (Centro-Abajo de la tarjeta)
-            centerButton();
-            runner.style.visibility = 'visible';
-
-            // E. EVENTOS (La parte importante)
-            // Usamos 'touchstart' con passive: false para control total en móvil
-            runner.addEventListener('touchstart', handleTouch, {passive: false});
-            // Usamos 'mousedown' para PC
-            runner.addEventListener('mousedown', handleTouch);
+            // Ejecutar juego
+            games[gameIndex]();
         }
 
-        // ==========================================
-        // 3. LÓGICA DEL JUEGO
-        // ==========================================
-        function handleTouch(e) {
-            if (e.cancelable) e.preventDefault(); // Evita scroll o zoom
+        // ================= JUEGOS =================
 
-            if (isWin) return; // Si ya ganó, no hacer nada
+        // 1. EL ESCAPISTA
+        function playChase() {
+            instr.innerText = "¡Atrapa el corazón 5 veces!";
+            state.target = 5;
+            createMovingBtn('❤️', () => {
+                state.score++;
+                if(state.score >= state.target) win();
+                else {
+                    instr.innerText = `Faltan ${state.target - state.score}`;
+                    popEffect();
+                }
+            });
+        }
 
-            if (attempts < maxAttempts) {
-                // --- MODO: ESCAPAR ---
-                attempts++;
-                updateProgress();
-                moveButtonRandomly();
+        // 2. LLUVIA
+        function playRain() {
+            instr.innerText = "¡Atrapa 5 objetos cayendo!";
+            state.target = 5;
+            
+            let spawner = setInterval(() => {
+                if(!state.active) return clearInterval(spawner);
+                const el = document.createElement('div');
+                el.innerText = ['🌸','✨','💖'][Math.floor(Math.random()*3)];
+                el.style.position = 'absolute';
+                el.style.left = Math.random()*80 + 10 + '%';
+                el.style.top = '-50px';
+                el.style.fontSize = '3rem';
+                el.style.transition = 'top 3s linear';
                 
-                // Efecto visual de fallo
-                document.getElementById('mainCard').classList.add('shake');
-                setTimeout(() => document.getElementById('mainCard').classList.remove('shake'), 500);
+                el.addEventListener('pointerdown', () => {
+                    el.remove();
+                    state.score++;
+                    if(state.score >= state.target) { state.active = false; win(); }
+                });
+                
+                area.appendChild(el);
+                setTimeout(() => el.style.top = '110vh', 50);
+                setTimeout(() => el.remove(), 3000);
+            }, 700);
+        }
 
-                // Vibración leve
-                if(navigator.vibrate) try{ navigator.vibrate(50); }catch(err){}
+        // 3. CLICKER
+        function playClicker() {
+            instr.innerText = "¡Dale muchos toques rápidos!";
+            state.target = 15;
+            
+            const btn = document.createElement('div');
+            btn.className = 'heart-btn';
+            btn.innerText = '🔥';
+            btn.style.position = 'relative'; // Centrado flex
+            
+            btn.addEventListener('pointerdown', () => {
+                state.score++;
+                btn.style.transform = 'scale(1.3)';
+                setTimeout(() => btn.style.transform = 'scale(1)', 100);
                 
-            } else {
-                // --- MODO: VICTORIA ---
-                isWin = true;
-                updateProgress(); // Llenar al 100%
-                
-                // Vibración de éxito
-                if(navigator.vibrate) try{ navigator.vibrate([100, 50, 100]); }catch(err){}
-                
-                // Mostrar Modal y Escribir mensaje
-                setTimeout(showWinModal, 500);
+                if(state.score >= state.target) win();
+            });
+            area.appendChild(btn);
+        }
+
+        // 4. ENCUENTRA EL DIFERENTE
+        function playUnique() {
+            instr.innerText = "Encuentra el emoji diferente";
+            area.innerHTML = '<div class="grid-container" id="grid"></div>';
+            const grid = document.getElementById('grid');
+            
+            const wrong = '😐';
+            const right = '😍';
+            const size = 16;
+            const winnerIdx = Math.floor(Math.random() * size);
+
+            for(let i=0; i<size; i++) {
+                const item = document.createElement('div');
+                item.className = 'grid-item';
+                item.innerText = (i === winnerIdx) ? right : wrong;
+                item.onclick = () => {
+                    if(i === winnerIdx) win();
+                    else item.innerText = '❌';
+                }
+                grid.appendChild(item);
             }
         }
 
-        function moveButtonRandomly() {
-            const btn = document.getElementById('runner');
-            const padding = 20; // Margen de seguridad
+        // 5. INFLA EL GLOBO
+        function playBalloon() {
+            instr.innerText = "Mantén presionado para inflar";
+            const btn = document.createElement('div');
+            btn.innerText = '🎈';
+            btn.style.fontSize = '3rem';
+            btn.style.cursor = 'pointer';
+            btn.style.userSelect = 'none';
             
-            // Calculamos límites de la pantalla visible
-            const maxWidth = window.innerWidth - btn.offsetWidth - padding;
-            const maxHeight = window.innerHeight - btn.offsetHeight - padding;
+            let scale = 1;
+            let growing = false;
 
-            // Coordenadas aleatorias
-            const newX = Math.max(padding, Math.random() * maxWidth);
-            const newY = Math.max(padding, Math.random() * maxHeight);
+            btn.addEventListener('pointerdown', () => growing = true);
+            btn.addEventListener('pointerup', () => growing = false);
+            
+            area.appendChild(btn);
 
-            // Aplicar movimiento
-            btn.style.left = newX + 'px';
-            btn.style.top = newY + 'px';
+            setInterval(() => {
+                if(growing && state.active) {
+                    scale += 0.05;
+                    btn.style.transform = `scale(${scale})`;
+                    if(scale > 4) {
+                        state.active = false;
+                        btn.innerText = '💥';
+                        setTimeout(win, 500);
+                    }
+                } else if(!growing && scale > 1 && state.active) {
+                    scale -= 0.05;
+                    btn.style.transform = `scale(${scale})`;
+                }
+            }, 50);
         }
 
-        function centerButton() {
-            // Función auxiliar para ponerlo cerca del centro al inicio
-            const btn = document.getElementById('runner');
-            const rect = document.getElementById('mainCard').getBoundingClientRect();
+        // 6. WHACK-A-HEART
+        function playWhack() {
+            instr.innerText = "¡Golpea el corazón cuando aparezca!";
+            state.target = 5;
             
-            // Ponerlo justo debajo de la tarjeta
-            let startTop = rect.bottom + 20;
-            // Si se sale por abajo, ponerlo encima
-            if (startTop > window.innerHeight - 100) startTop = rect.top - 100;
+            const btn = document.createElement('div');
+            btn.className = 'heart-btn';
+            btn.innerText = '🐹';
+            btn.style.transition = 'none'; // Salto instantáneo
+            
+            btn.onpointerdown = () => {
+                state.score++;
+                popEffect();
+                if(state.score >= state.target) { state.active=false; win(); btn.remove(); }
+                else moveRandom(btn);
+            };
+            
+            area.appendChild(btn);
+            moveRandom(btn);
 
-            btn.style.left = (window.innerWidth / 2 - 40) + 'px'; // 40 es la mitad del ancho del btn
-            btn.style.top = startTop + 'px';
+            let jumper = setInterval(() => {
+                if(!state.active) return clearInterval(jumper);
+                moveRandom(btn);
+            }, 800);
         }
 
-        function updateProgress() {
-            const percentage = Math.min(100, (attempts / maxAttempts) * 100);
-            const bar = document.getElementById('loveBar');
-            const txt = document.getElementById('statusText');
-            
-            bar.style.width = percentage + '%';
-            
-            if (percentage < 100) {
-                txt.innerText = `Cargando amor... ${percentage}%`;
-            } else {
-                txt.innerText = `¡Amor cargado al 100%!`;
-            }
+        // 7. MATEMÁTICAS
+        function playMath() {
+            instr.innerText = "Resuelve la ecuación";
+            area.innerHTML = `
+                <div class="math-container">
+                    <div class="math-question">1 + 1 = ?</div>
+                    <div class="options-row">
+                        <div class="option-btn" onclick="wrongAnswer(this)">2</div>
+                        <div class="option-btn" onclick="win()">Nosotros</div>
+                        <div class="option-btn" onclick="wrongAnswer(this)">11</div>
+                    </div>
+                </div>
+            `;
         }
 
-        // ==========================================
-        // 4. MÁQUINA DE ESCRIBIR (Typerwriter)
-        // ==========================================
-        function showWinModal() {
-            const modal = document.getElementById('winModal');
-            modal.classList.add('active');
+        // 8. SECUENCIA
+        function playSequence() {
+            instr.innerText = "Toca en orden: 1, 2, 3, ❤️";
+            const seq = ['1', '2', '3', '❤️'];
+            let current = 0;
             
-            // Elegir mensaje según el día
+            area.innerHTML = '<div class="grid-container" style="grid-template-columns:repeat(2,1fr)" id="seqGrid"></div>';
+            const grid = document.getElementById('seqGrid');
+            
+            // Barajar visualmente pero mantener lógica
+            let items = [...seq].sort(() => Math.random() - 0.5);
+            
+            items.forEach(val => {
+                const btn = document.createElement('div');
+                btn.className = 'grid-item';
+                btn.style.background = 'rgba(255,255,255,0.3)';
+                btn.style.padding = '20px';
+                btn.style.borderRadius = '10px';
+                btn.innerText = val;
+                
+                btn.onclick = () => {
+                    if(val === seq[current]) {
+                        btn.style.background = '#81ecec'; // Verde éxito
+                        current++;
+                        if(current >= seq.length) win();
+                    } else {
+                        btn.style.background = '#ff7675'; // Rojo error
+                        setTimeout(() => btn.style.background = 'rgba(255,255,255,0.3)', 300);
+                        current = 0; // Reiniciar
+                    }
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        // 9. MEMORIA (Mini)
+        function playMemory() {
+            instr.innerText = "Encuentra los pares";
+            const cards = ['🐶', '🐱', '🐶', '🐱'];
+            cards.sort(() => Math.random() - 0.5);
+            
+            area.innerHTML = '<div class="grid-container" style="grid-template-columns:repeat(2,1fr)" id="memGrid"></div>';
+            const grid = document.getElementById('memGrid');
+            
+            let flipped = [];
+            let matched = 0;
+            
+            cards.forEach((val, idx) => {
+                const card = document.createElement('div');
+                card.className = 'grid-item';
+                card.innerText = '❓';
+                card.style.background = 'white';
+                card.style.padding = '20px';
+                card.style.borderRadius = '10px';
+                
+                card.onclick = () => {
+                    if(flipped.length < 2 && card.innerText === '❓') {
+                        card.innerText = val;
+                        flipped.push({el: card, val: val});
+                        
+                        if(flipped.length === 2) {
+                            if(flipped[0].val === flipped[1].val) {
+                                matched++;
+                                flipped = [];
+                                if(matched === 2) win();
+                            } else {
+                                setTimeout(() => {
+                                    flipped[0].el.innerText = '❓';
+                                    flipped[1].el.innerText = '❓';
+                                    flipped = [];
+                                }, 600);
+                            }
+                        }
+                    }
+                };
+                grid.appendChild(card);
+            });
+        }
+
+        // 10. SLIDER
+        function playSlider() {
+            instr.innerText = "Desliza hasta el final para amar";
+            area.innerHTML = `
+                <div class="slider-container">
+                    <input type="range" min="0" max="100" value="0" id="loveSlider">
+                    <div style="margin-top:20px; font-size:2rem;">🔒</div>
+                </div>
+            `;
+            
+            const slider = document.getElementById('loveSlider');
+            slider.oninput = () => {
+                if(slider.value == 100) win();
+            };
+        }
+
+        // ================= UTILIDADES =================
+        function createMovingBtn(icon, onClick) {
+            const btn = document.createElement('div');
+            btn.className = 'heart-btn';
+            btn.innerText = icon;
+            
+            btn.onpointerdown = (e) => {
+                e.preventDefault();
+                onClick();
+                moveRandom(btn);
+            };
+            
+            area.appendChild(btn);
+            moveRandom(btn);
+        }
+
+        function moveRandom(elem) {
+            const x = Math.random() * (window.innerWidth - 100) + 20;
+            const y = Math.random() * (window.innerHeight - 200) + 50;
+            elem.style.left = Math.max(20, x) + 'px';
+            elem.style.top = Math.max(50, y) + 'px';
+        }
+
+        function wrongAnswer(elem) {
+            elem.style.background = '#ff7675';
+            elem.style.color = 'white';
+        }
+
+        function popEffect() {
+            if(navigator.vibrate) navigator.vibrate(50);
+        }
+
+        function win() {
+            if(!state.active) return;
+            state.active = false;
+            
+            // Elegir mensaje según día
             const now = new Date();
             const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-            const msgIndex = (diff >= 0 ? diff : 0) % dailyMessages.length;
-            const textToType = dailyMessages[msgIndex];
-
-            // Iniciar efecto
-            typeWriter(textToType, document.getElementById('typewriter-text'), 0);
-            throwConfetti();
-        }
-
-        function typeWriter(text, element, i) {
-            if (i < text.length) {
-                element.innerHTML += text.charAt(i);
-                setTimeout(() => typeWriter(text, element, i + 1), 50); // Velocidad de escritura
-            }
-        }
-
-        // ==========================================
-        // 5. CONFETI (Visual)
-        // ==========================================
-        function throwConfetti() {
+            const msgIdx = (diff >= 0 ? diff : 0) % messages.length;
+            
+            document.getElementById('finalMsg').innerText = messages[msgIdx];
+            document.getElementById('winModal').classList.add('active');
+            
+            // Confeti
             for(let i=0; i<50; i++) {
                 const c = document.createElement('div');
-                c.innerHTML = ['❤️','🎉','✨'][Math.floor(Math.random()*3)];
+                c.innerText = '🎉';
                 c.style.position = 'fixed';
-                c.style.left = Math.random()*100 + 'vw';
+                c.style.left = Math.random()*100+'vw';
                 c.style.top = '-10vh';
-                c.style.fontSize = (Math.random()*20 + 10) + 'px';
+                c.style.fontSize = Math.random()*20+10+'px';
+                c.style.transition = 'top 2s ease-in';
                 c.style.zIndex = 6000;
-                c.style.animation = `fall ${Math.random()*2+2}s linear forwards`;
-                
                 document.body.appendChild(c);
+                setTimeout(() => c.style.top = '110vh', 100);
             }
-            // CSS inyectado para la caída
-            const style = document.createElement('style');
-            style.innerHTML = `@keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }`;
-            document.head.appendChild(style);
         }
 
-        // Iniciar todo
-        window.onload = init;
-
+        init();
     </script>
 </body>
 </html>
