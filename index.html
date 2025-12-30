@@ -2,330 +2,310 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para Cristina Jamile ❤️</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;500&display=swap');
 
         body {
             margin: 0;
             padding: 0;
-            width: 100vw;
             height: 100vh;
-            height: 100dvh;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Montserrat', sans-serif;
-            transition: background 1s ease;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            transition: background 2s ease;
         }
 
-        /* FONDOS */
-        body.morning { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
-        body.sunset { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
-        body.night { background: linear-gradient(135deg, #09203f 0%, #537895 100%); }
+        /* --- ESTILOS POR HORA DEL DÍA (Fondos) --- */
+        /* Mañana (6am - 5pm): Claro, rosado, fresco */
+        body.morning {
+            background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+        }
+        /* Tarde (5pm - 8pm): Atardecer, naranja, romántico */
+        body.sunset {
+            background: linear-gradient(to right, #fa709a 0%, #fee140 100%);
+        }
+        /* Noche (8pm - 6am): Oscuro, elegante, misterioso */
+        body.night {
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+        }
 
-        /* TARJETA */
+        /* --- TARJETA DE CRISTAL --- */
         .glass-card {
             background: rgba(255, 255, 255, 0.25);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.18);
-            padding: 30px;
+            padding: 40px 20px;
             text-align: center;
-            width: 300px;
-            max-width: 85%;
+            max-width: 90%;
+            width: 350px;
             position: relative;
             z-index: 10;
-            transition: opacity 0.3s;
+            color: #fff;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        
-        .glass-card.playing { opacity: 0.3; pointer-events: none; }
 
+        /* Ajustes de texto para que se lea bien siempre */
+        body.morning .glass-card { color: #555; text-shadow: none; background: rgba(255,255,255,0.7); }
+        
         h1 {
             font-family: 'Great Vibes', cursive;
-            font-size: 2.8rem;
-            color: #fff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            margin: 5px 0 15px 0;
+            font-size: 3.5rem;
+            margin: 10px 0;
+            line-height: 1.2;
         }
 
-        .day-badge {
-            background: #fff;
+        .counter-badge {
+            background: rgba(255,255,255,0.9);
             color: #d63384;
             padding: 5px 15px;
             border-radius: 50px;
             font-size: 0.9rem;
-            font-weight: 700;
+            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             display: inline-block;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .magic-btn-container {
-            height: 120px;
+        .phrase-box {
+            font-style: italic;
+            font-size: 1.1rem;
+            min-height: 60px;
+            margin-top: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* --- CORAZÓN (ESTILOS CRÍTICOS) --- */
+        /* --- ICONO CENTRAL INTERACTIVO --- */
         .magic-icon {
-            font-size: 4.5rem; 
-            width: 100px; height: 100px;
-            line-height: 100px; text-align: center;
+            font-size: 5rem;
             cursor: pointer;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
-            position: relative; 
-            z-index: 1000;
-            
-            /* ESTO ARREGLA EL PROBLEMA DEL CLIC EN MÓVIL: */
-            touch-action: manipulation; 
-            -webkit-user-drag: none;
-            
-            transition: top 0.2s ease-out, left 0.2s ease-out;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            user-select: none;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
         }
+        .magic-icon:hover { transform: scale(1.2); }
+        .magic-icon:active { transform: scale(0.9) rotate(360deg); }
 
-        .magic-icon.moving {
-            position: fixed; 
-            z-index: 10000; /* Asegura que siempre esté encima al moverse */
-        }
+        .hint { font-size: 0.7rem; opacity: 0.8; margin-bottom: 10px; }
 
-        .hint { font-size: 0.8rem; color: #fff; opacity: 0.9; margin-top: 5px; }
-
-        .taunt {
+        /* --- SISTEMA DE PARTÍCULAS (Animaciones Variadas) --- */
+        .particle {
             position: fixed;
-            background: #ff4757;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 0.9rem;
             pointer-events: none;
-            z-index: 50;
-            animation: floatUp 0.8s forwards;
-            white-space: nowrap;
+            z-index: 1;
         }
-        @keyframes floatUp { to { transform: translateY(-40px); opacity: 0; } }
 
-        /* MODAL */
+        /* Animación 1: Caída (Lluvia) */
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+        /* Animación 2: Subida (Burbujas) */
+        @keyframes rise {
+            to { transform: translateY(-110vh) scale(1.5); opacity: 0; }
+        }
+        /* Animación 3: Flotar (Nubes/Sueños) */
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 20px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* --- MODAL SORPRESA --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 20000; /* Z-index altísimo para tapar todo */
+            background: rgba(0,0,0,0.85);
+            z-index: 100;
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: 0.5s;
         }
         .modal.active { opacity: 1; pointer-events: all; }
         .modal-body {
-            background: white; padding: 30px; border-radius: 20px;
-            text-align: center; max-width: 80%; transform: scale(0.5);
-            transition: 0.5s;
-            border: 4px solid #ff9a9e;
+            background: white; color: #333; padding: 30px; border-radius: 20px;
+            text-align: center; max-width: 80%; transform: scale(0.5); transition: 0.5s;
         }
         .modal.active .modal-body { transform: scale(1); }
-        .modal-text { font-size: 1.2rem; color: #333; margin: 20px 0; }
-        
-        .particle { position: fixed; top: -10vh; z-index: 1; opacity: 0.6; pointer-events: none; }
+        .close-modal {
+            margin-top: 15px; background: #ff4757; color: white; border: none;
+            padding: 10px 20px; border-radius: 50px; font-weight: bold; cursor: pointer;
+        }
 
     </style>
 </head>
 <body>
 
-    <div class="glass-card" id="card">
-        <div id="dayCounter" class="day-badge">Día 1</div>
+    <div class="glass-card">
+        <div id="dayCounter" class="counter-badge">Día 1</div>
+        
+        <div id="mainIcon" class="magic-icon">❤️</div>
+        <div class="hint">(Tócame)</div>
+
         <h1>Cristina Jamile</h1>
         
-        <div class="magic-btn-container">
-            <div id="mainIcon" class="magic-icon">❤️</div>
+        <div id="dailyMessage" class="phrase-box">
+            Calculando nuestro amor...
         </div>
-        
-        <p class="hint" id="instruction">(Tócame si puedes)</p>
     </div>
 
-    <div class="modal" id="winModal">
+    <div class="modal" id="surpriseModal">
         <div class="modal-body">
-            <h2 id="modalTitle">¡Te amo! 🏆</h2>
-            <p id="modalText">...</p>
-            <div style="font-size: 3rem;">🥰🎉💑</div>
-            <button onclick="location.reload()" style="margin-top:15px; background:#ff4757; color:white; border:none; padding:10px 20px; border-radius:20px; font-size:1rem;">Jugar otra vez</button>
+            <h2 id="modalTitle">¡Sorpresa! 🎁</h2>
+            <p id="modalText">Eres lo mejor que me ha pasado.</p>
+            <button class="close-modal" onclick="closeModal()">Te amo</button>
         </div>
     </div>
 
     <script>
-        // === CONFIGURACIÓN ===
-        const startDate = new Date(2025, 11, 29); // 29 Dic 2025
-        // =====================
+        // ==========================================
+        // 1. CONFIGURACIÓN DE FECHA (IMPORTANTE)
+        // ==========================================
+        // Cambia esto a la fecha de inicio.
+        // new Date(AÑO, MES-1, DÍA) -> Enero es 0, Diciembre es 11.
+        const startDate = new Date(2025, 11, 29); 
 
-        const messages = [
-            "Eres mi persona favorita en el universo.",
-            "Me alegras la vida con solo existir.",
-            "Cada día te quiero un poquito más.",
-            "Eres el amor de mi vida, Cristina.",
-            "Gracias por hacerme tan feliz.",
-            "No te cambio por nada en el mundo.",
-            "Contigo todo es más bonito."
-        ];
+        // ==========================================
+        // 2. BASE DE DATOS DE AMOR
+        // ==========================================
         
-        const taunts = ["¡Lenta! 😝", "¡Casi! 😂", "¡Aquí no! 💨", "¡Soy ninja! 🥷", "¡Ups! 🙈", "¡Más rápido! ⚡"];
-        const icons = ['❤️', '😻', '✨', '🧸', '🍓', '💎', '🌹', '🦄'];
+        // Frases para el texto principal (Se rotan cada día)
+        const phrases = [
+            "Eres la razón por la que sonrío al ver el celular.",
+            "Mi lugar favorito es dentro de tus abrazos.",
+            "Contigo, cada día es San Valentín.",
+            "No necesito pedir deseos, ya te tengo a ti.",
+            "Eres el verso más bonito de mi poema favorito.",
+            "Me gustas más que el café por las mañanas.",
+            "Tu amor es mi motor para ser mejor cada día.",
+            "Eres mi notificación favorita.",
+            "El mundo es más bonito cuando estás tú.",
+            "Te elijo hoy, mañana y siempre, Cristina."
+        ];
 
-        let attempts = 0;
-        const maxDodges = 5; 
-        let isRunning = false;
+        // Mensajes secretos para el Modal (Se rotan cada día)
+        const secrets = [
+            "PD: Me encantas cuando te ríes. 😍",
+            "Hoy te quiero un poquito más que ayer. 📈",
+            "Solo quería recordarte que eres hermosa. 🌹",
+            "Gracias por existir y estar en mi vida. ✨",
+            "Mándame una foto tuya, te extraño. 📸"
+        ];
+
+        // Iconos centrales que cambian cada día
+        const icons = ['❤️', '🌹', '🧸', '💌', '💍', '✨', '😻', '🦄'];
+
+        // Elementos que caen/vuelan (Partículas)
+        const particles = ['💖', '🌸', '🦋', '⭐', '🍃', '❄️', '🔥', '🍬'];
+
+        // ==========================================
+        // 3. LÓGICA DEL PROGRAMA
+        // ==========================================
 
         function init() {
-            // 1. Configuración Visual
             const now = new Date();
+            
+            // --- A. LÓGICA DE TIEMPO (HORA DEL DÍA) ---
             const hour = now.getHours();
             const body = document.body;
-
+            
+            // Eliminar clases anteriores
             body.classList.remove('morning', 'sunset', 'night');
-            if (hour >= 6 && hour < 17) body.classList.add('morning');
-            else if (hour >= 17 && hour < 20) body.classList.add('sunset');
-            else body.classList.add('night');
 
-            const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-            const dayNum = diff >= 0 ? diff + 1 : 1;
-            
-            document.getElementById('dayCounter').innerText = `Día ${dayNum}`;
-            const iconChar = icons[(dayNum - 1) % icons.length];
-            document.getElementById('mainIcon').innerText = iconChar;
-            document.getElementById('modalText').innerText = messages[(dayNum - 1) % messages.length];
-
-            startParticles();
-
-            // 2. CONFIGURACIÓN DE EVENTOS ROBUSTA
-            const icon = document.getElementById('mainIcon');
-            
-            // MOUSE (PC)
-            icon.addEventListener('mousedown', (e) => {
-                e.preventDefault();
-                handleInteraction(e.clientX, e.clientY);
-            });
-
-            // TOUCH (MÓVIL)
-            icon.addEventListener('touchstart', (e) => {
-                // El preventDefault aquí es CRUCIAL para evitar zoom/scroll
-                e.preventDefault();
-                // Usamos el primer dedo que toca
-                const touch = e.touches[0];
-                handleInteraction(touch.clientX, touch.clientY);
-            }, { passive: false });
-        }
-
-        function handleInteraction(x, y) {
-            const icon = document.getElementById('mainIcon');
-            
-            if (attempts < maxDodges) {
-                // --- MODO HUIDA ---
-                if (!isRunning) {
-                    isRunning = true;
-                    // Se activa el modo flotante
-                    icon.classList.add('moving');
-                    document.getElementById('card').classList.add('playing');
-                    document.getElementById('instruction').innerText = "¡Atrápalo!";
-                    
-                    // Primer movimiento inmediato
-                    moveIconSafe(icon);
-                    return; 
-                }
-                
-                // Movimientos subsiguientes
-                moveIconSafe(icon);
-                showTaunt(x, y);
-                attempts++;
-                
-                // Intento seguro de vibración
-                if(navigator.vibrate) try { navigator.vibrate(50); } catch(e){}
-
+            if (hour >= 6 && hour < 17) {
+                body.classList.add('morning'); // Día
+            } else if (hour >= 17 && hour < 20) {
+                body.classList.add('sunset'); // Atardecer
             } else {
-                // --- MODO VICTORIA ---
-                document.getElementById('winModal').classList.add('active');
-                if(navigator.vibrate) try { navigator.vibrate([100, 50, 100]); } catch(e){}
-                for(let i=0; i<30; i++) setTimeout(createConfetti, i*50);
+                body.classList.add('night'); // Noche
             }
+
+            // --- B. LÓGICA DE DÍAS (CUENTA) ---
+            const diffTime = Math.abs(now - startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            
+            // Asegurar que empiece en 1
+            const dayNumber = diffDays > 0 ? diffDays : 1;
+
+            // --- C. SELECCIÓN DE CONTENIDO BASADO EN EL DÍA ---
+            // Usamos el operador % para rotar infinitamente las listas
+            const phraseIndex = (dayNumber - 1) % phrases.length;
+            const secretIndex = (dayNumber - 1) % secrets.length;
+            const iconIndex = (dayNumber - 1) % icons.length;
+            const particleIndex = (dayNumber - 1) % particles.length;
+            
+            // Insertar textos
+            document.getElementById('dayCounter').innerText = `Día ${dayNumber} Juntos`;
+            document.getElementById('dailyMessage').innerText = phrases[phraseIndex];
+            document.getElementById('modalText').innerText = secrets[secretIndex];
+            document.getElementById('mainIcon').innerText = icons[iconIndex];
+
+            // --- D. ANIMACIÓN ÚNICA POR DÍA ---
+            // Determina el tipo de animación (0=Caer, 1=Subir, 2=Flotar)
+            const animationType = dayNumber % 3; 
+            const particleChar = particles[particleIndex];
+
+            startParticleSystem(particleChar, animationType);
         }
 
-        // LÓGICA DE JAULA SEGURA
-        function moveIconSafe(elem) {
-            const margin = 50; // Margen de seguridad desde los bordes
-            const iconSize = 100; // Tamaño aproximado del icono
-            
-            // Dimensiones de la ventana
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-
-            // Calcular límites seguros
-            const maxLeft = w - iconSize - margin;
-            const maxTop = h - iconSize - margin;
-            const minLeft = margin;
-            const minTop = margin;
-
-            // Generar coordenadas aleatorias
-            const newLeft = Math.max(minLeft, Math.floor(Math.random() * (maxLeft - minLeft + 1)) + minLeft);
-            const newTop = Math.max(minTop, Math.floor(Math.random() * (maxTop - minTop + 1)) + minTop);
-
-            // Aplicar
-            elem.style.left = newLeft + 'px';
-            elem.style.top = newTop + 'px';
-        }
-
-        function showTaunt(x, y) {
-            const t = document.createElement('div');
-            t.className = 'taunt';
-            t.innerText = taunts[Math.floor(Math.random() * taunts.length)];
-            
-            // Posicionar cerca del toque, pero sin salirse
-            t.style.left = Math.min(x, window.innerWidth - 100) + 'px';
-            t.style.top = Math.min(y, window.innerHeight - 50) + 'px';
-            
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 800);
-        }
-
-        function startParticles() {
+        // --- SISTEMA DE PARTÍCULAS ---
+        function startParticleSystem(char, type) {
             setInterval(() => {
                 const p = document.createElement('div');
-                p.className = 'particle';
-                p.innerText = ['💖','🌸','✨'][Math.floor(Math.random()*3)];
+                p.classList.add('particle');
+                p.innerText = char;
+                
+                // Aleatoriedad
                 p.style.left = Math.random() * 100 + 'vw';
-                p.style.fontSize = Math.random() * 20 + 10 + 'px';
-                p.style.animation = `fall ${Math.random()*3+2}s linear forwards`;
+                p.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                
+                // Configurar animación según el tipo
+                if (type === 0) {
+                    // Caída (Lluvia)
+                    p.style.top = '-10vh';
+                    p.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+                } else if (type === 1) {
+                    // Subida (Burbujas)
+                    p.style.bottom = '-10vh';
+                    p.style.animation = `rise ${Math.random() * 4 + 3}s linear forwards`;
+                } else {
+                    // Flotar aleatorio (Estático/Ambiental)
+                    p.style.top = Math.random() * 100 + 'vh';
+                    p.style.animation = `float ${Math.random() * 5 + 3}s ease-in-out infinite`;
+                    p.style.opacity = Math.random();
+                }
+
                 document.body.appendChild(p);
-                setTimeout(() => p.remove(), 5000);
-            }, 500);
-            
-            const style = document.createElement('style');
-            style.innerHTML = `@keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }`;
-            document.head.appendChild(style);
-        }
-        
-        function createConfetti() {
-            const c = document.createElement('div');
-            c.innerText = '🎉';
-            c.style.position = 'fixed';
-            c.style.left = '50%'; c.style.top = '50%';
-            c.style.fontSize = '2rem';
-            c.style.zIndex = 30000;
-            c.style.transition = 'all 1s ease-out';
-            document.body.appendChild(c);
-            
-            setTimeout(() => {
-                const angle = Math.random() * Math.PI * 2;
-                const dist = 150 + Math.random() * 150;
-                c.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(0)`;
-                c.style.opacity = 0;
-            }, 50);
-            setTimeout(() => c.remove(), 1000);
+
+                // Limpiar memoria
+                setTimeout(() => { p.remove(); }, 6000);
+            }, 400); // Frecuencia de creación
         }
 
+        // --- INTERACCIÓN MODAL ---
+        const modal = document.getElementById('surpriseModal');
+        const mainIcon = document.getElementById('mainIcon');
+
+        mainIcon.addEventListener('click', () => {
+            modal.classList.add('active');
+            // Vibración si es celular
+            if (navigator.vibrate) navigator.vibrate(50);
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // Iniciar todo
         init();
+
     </script>
 </body>
 </html>
