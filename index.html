@@ -11,25 +11,26 @@
             margin: 0;
             padding: 0;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* Evita el scroll */
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Montserrat', sans-serif;
             transition: background 2s ease;
-            user-select: none; /* Evita seleccionar texto al jugar */
+            user-select: none;
+            -webkit-tap-highlight-color: transparent; /* Quita el cuadro azul al tocar en Android */
         }
 
         /* --- FONDOS SEGÚN HORA --- */
-        body.morning { background: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%); }
+        body.morning { background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); }
         body.sunset { background: linear-gradient(to right, #fa709a 0%, #fee140 100%); }
         body.night { background: linear-gradient(to bottom, #09203f 0%, #537895 100%); }
 
         /* --- TARJETA --- */
         .glass-card {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.18);
             padding: 30px;
@@ -38,13 +39,12 @@
             width: 320px;
             position: relative;
             z-index: 10;
-            transition: all 0.3s ease;
+            transition: opacity 0.3s ease;
         }
         
-        /* Ocultar tarjeta cuando el botón se escapa para dar espacio */
+        /* Cuando estamos jugando, la tarjeta se hace casi invisible para ver el botón */
         .glass-card.playing {
-            opacity: 0.5;
-            transform: scale(0.9);
+            opacity: 0.2; 
         }
 
         h1 {
@@ -55,17 +55,18 @@
             margin: 10px 0;
         }
 
-        .counter-badge {
+        .day-badge {
             background: #fff;
             color: #d63384;
             padding: 5px 15px;
             border-radius: 50px;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             display: inline-block;
             margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         /* --- BOTÓN JUGUETÓN --- */
@@ -79,44 +80,42 @@
         .magic-icon {
             font-size: 4.5rem;
             cursor: pointer;
-            transition: transform 0.2s ease; /* Movimiento rápido */
+            transition: transform 0.1s ease; /* Movimiento muy rápido */
             filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
             position: relative;
-            z-index: 20;
+            z-index: 999; /* Siempre encima de todo */
+            display: inline-block;
         }
 
-        /* Clase para cuando el botón se vuelve "loco" y sale de la tarjeta */
-        .magic-icon.running {
-            position: fixed; /* Se sale del flujo normal */
-        }
+        .hint { font-size: 0.8rem; color: #fff; margin-top: 0; opacity: 0.9; }
 
-        .hint { font-size: 0.7rem; color: #fff; margin-top: -10px; opacity: 0.9; }
-
-        /* --- MENSAJES FLOTANTES (TAUNTS) --- */
+        /* --- MENSAJES FLOTANTES (BURLAS) --- */
         .taunt {
             position: fixed;
             color: #fff;
             background: #ff4757;
-            padding: 5px 10px;
-            border-radius: 10px;
+            padding: 5px 12px;
+            border-radius: 15px;
             font-size: 0.9rem;
             font-weight: bold;
             pointer-events: none;
-            animation: floatUp 1s forwards;
-            z-index: 30;
+            animation: floatUp 0.8s forwards;
+            z-index: 50;
+            white-space: nowrap;
         }
         @keyframes floatUp {
-            to { transform: translateY(-50px); opacity: 0; }
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-40px) scale(1.1); opacity: 0; }
         }
 
         /* --- PARTICULAS --- */
-        .particle { position: fixed; pointer-events: none; z-index: 1; opacity: 0.7; }
+        .particle { position: fixed; pointer-events: none; z-index: 1; opacity: 0.6; }
 
         /* --- MODAL --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85);
-            z-index: 100;
+            z-index: 2000;
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: 0.5s;
         }
@@ -125,69 +124,73 @@
             background: white; padding: 30px; border-radius: 20px;
             text-align: center; max-width: 80%; transform: scale(0.5); transition: 0.5s;
             border: 4px solid #ff6b81;
+            box-shadow: 0 0 50px rgba(255, 107, 129, 0.5);
         }
         .modal.active .modal-body { transform: scale(1); }
-        .modal-text { font-size: 1.1rem; color: #333; margin: 20px 0; }
+        .modal-text { font-size: 1.2rem; color: #333; margin: 20px 0; line-height: 1.5; }
         
     </style>
 </head>
 <body>
 
     <div class="glass-card" id="card">
-        <div id="dayCounter" class="counter-badge">Día 1</div>
+        <div id="dayCounter" class="day-badge">Día 1</div>
+        
         <h1>Cristina Jamile</h1>
         
         <div class="magic-btn-container">
             <div id="mainIcon" class="magic-icon">❤️</div>
         </div>
-        <p class="hint" id="instruction">(Atrápame si puedes)</p>
+        <p class="hint" id="instruction">(Tócame para ver el mensaje)</p>
     </div>
 
     <div class="modal" id="surpriseModal">
         <div class="modal-body">
-            <h2 id="modalTitle">¡Me atrapaste! 🏆</h2>
+            <h2 id="modalTitle">¡Te amo! 🏆</h2>
             <p id="modalText">...</p>
-            <div style="font-size: 2rem;">🥰🔥💑</div>
+            <div style="font-size: 2.5rem;">🥰🔥💑</div>
         </div>
     </div>
 
     <script>
         // ================= CONFIGURACIÓN =================
-        const startDate = new Date(2025, 11, 29); // AÑO, MES (0-11), DÍA
+        // FECHA DE INICIO: Año, Mes (Enero=0, Dic=11), Día
+        const startDate = new Date(2025, 11, 29); 
         // =================================================
 
-        // Frases finales (Premio)
+        // Frases para el Modal (Premio)
         const loveMessages = [
-            "Te ganaste mi corazón (otra vez).",
-            "Eres rápida, pero mi amor por ti es más rápido.",
-            "Me rindo ante ti, hoy y siempre.",
-            "Premio: Un beso enorme cuando nos veamos.",
-            "Eres mi jugadora favorita número 1.",
-            "Contigo pierdo la noción del tiempo.",
-            "¡Te amo Cristina Jamile!"
+            "Eres mi casualidad favorita.",
+            "Me haces falta cada segundo que no estás.",
+            "Tu sonrisa es mi cargador de energía.",
+            "Te quiero para todos mis días.",
+            "Eres la mejor parte de mi vida.",
+            "Gracias por aguantarme y amarme.",
+            "¡Me encantas muchísimo, Cristina!",
+            "Eres perfecta tal y como eres."
         ];
 
-        // Frases burlonas cuando el botón se escapa (Dinámicas)
+        // Frases burlonas (Taunts)
         const taunts = [
             "¡Muy lenta! 😝", "¡Casi! 😂", "¡Aquí no! 💨", "¡Soy ninja! 🥷", 
             "¡Intenta de nuevo! 😜", "¡Ups! 🙈", "¡Más rápido! ⚡"
         ];
 
         // Iconos Diarios
-        const icons = ['❤️', '🍩', '😻', '🪐', '🧸', '🍓', '💎', '🌸'];
+        const icons = ['❤️', '🌹', '😻', '✨', '🧸', '🍓', '💎', '🦄'];
         // Partículas
-        const particles = ['✨', '💖', '🦋', '🍀', '🍬', '🌙'];
+        const particles = ['💖', '🌸', '🦋', '⭐', '🍃', '🔥'];
 
-        // Variables de Estado
+        // Variables de Estado del Juego
         let attempts = 0;
-        const maxDodges = 5; // Cuántas veces huye
+        const maxDodges = 5; // Huye 5 veces
         let isRunning = false;
 
         function init() {
             const now = new Date();
             const hour = now.getHours();
             
-            // 1. Tema Hora
+            // 1. Fondo según Hora
             const body = document.body;
             body.classList.remove('morning', 'sunset', 'night');
             if (hour >= 6 && hour < 17) body.classList.add('morning');
@@ -196,11 +199,13 @@
 
             // 2. Contador de Días
             const diffTime = Math.abs(now - startDate);
-            const dayNumber = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+            let dayNumber = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (dayNumber < 1) dayNumber = 1; // Mínimo día 1
             
-            // 3. Selección de Contenido
-            document.getElementById('dayCounter').innerText = `Nivel ${dayNumber}`;
+            // Texto actualizado a "Día X"
+            document.getElementById('dayCounter').innerText = `Día ${dayNumber}`;
             
+            // 3. Selección de Contenido Diario (Ciclo)
             const iconIndex = (dayNumber - 1) % icons.length;
             const msgIndex = (dayNumber - 1) % loveMessages.length;
             const particleChar = particles[(dayNumber - 1) % particles.length];
@@ -210,78 +215,96 @@
             
             document.getElementById('modalText').innerText = loveMessages[msgIndex];
 
-            // Iniciar fondo animado
             startParticles(particleChar);
 
-            // 4. Lógica del Juego (Huir)
-            // Usamos 'mousedown' y 'touchstart' para que sea inmediato
-            mainIcon.addEventListener('touchstart', (e) => handleInteraction(e));
-            mainIcon.addEventListener('mousedown', (e) => handleInteraction(e));
+            // 4. Listeners para el juego
+            mainIcon.addEventListener('touchstart', handleInteraction, {passive: false});
+            mainIcon.addEventListener('mousedown', handleInteraction);
         }
 
         function handleInteraction(e) {
-            // Evitar doble disparo en algunos dispositivos
-            // e.preventDefault(); 
+            // Prevenimos comportamiento por defecto en touch para que sea rápido
+            if(e.type === 'touchstart') e.preventDefault();
             
             const icon = document.getElementById('mainIcon');
             const card = document.getElementById('card');
+            
+            // Determinar coordenadas del toque/clic para poner el texto de burla
+            let clientX, clientY;
+            if (e.type === 'touchstart') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
 
             if (attempts < maxDodges) {
-                // MODO HUIR
+                // --- MODO HUIR ---
                 if (!isRunning) {
-                    // La primera vez, lo sacamos del flujo normal para que pueda viajar por toda la pantalla
-                    icon.classList.add('running');
+                    // Sacamos el botón del flujo normal para moverlo libremente
+                    icon.style.position = 'fixed';
+                    icon.style.transition = 'top 0.2s, left 0.2s'; // Suavizado
                     card.classList.add('playing');
                     document.getElementById('instruction').innerText = "¡Atrápalo!";
                     isRunning = true;
                 }
 
-                moveButtonRandomly(icon);
-                showTaunt(e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY);
+                moveButtonSafely(icon);
+                showTaunt(clientX, clientY);
                 attempts++;
                 
-                // Vibración corta (error)
                 if (navigator.vibrate) navigator.vibrate(50);
 
             } else {
-                // MODO ATRAPADO (Éxito)
+                // --- MODO ATRAPADO ---
                 openModal();
-                // Resetear juego para la próxima recarga
-                icon.classList.remove('running');
+                // Restaurar estado visual (opcional, o dejarlo así hasta recargar)
                 card.classList.remove('playing');
+                icon.style.display = 'none'; // Ocultar botón al ganar
             }
         }
 
-        function moveButtonRandomly(elem) {
-            // Calcular posición aleatoria segura (dentro del viewport - margen)
-            const margin = 50;
-            const maxX = window.innerWidth - margin;
-            const maxY = window.innerHeight - margin;
+        // --- FUNCIÓN CLAVE: MOVIMIENTO SEGURO ---
+        function moveButtonSafely(elem) {
+            // Obtenemos dimensiones de la pantalla visible
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
 
-            const randomX = Math.floor(Math.random() * (maxX - margin)) + margin;
-            const randomY = Math.floor(Math.random() * (maxY - margin)) + margin;
+            // Obtenemos tamaño del botón
+            // (Si es la primera vez, getBoundingClientRect nos da el tamaño real)
+            const rect = elem.getBoundingClientRect();
+            const btnW = rect.width;
+            const btnH = rect.height;
 
-            elem.style.left = randomX + 'px';
-            elem.style.top = randomY + 'px';
+            // Margen de seguridad (padding) para que no toque el borde exacto
+            const padding = 20;
+
+            // Calculamos el área segura máxima
+            const maxLeft = viewportWidth - btnW - padding;
+            const maxTop = viewportHeight - btnH - padding;
+
+            // Generamos posición aleatoria dentro del área segura
+            // Math.max(padding, ...) asegura que no sea negativo ni 0
+            const randomLeft = Math.max(padding, Math.floor(Math.random() * maxLeft));
+            const randomTop = Math.max(padding, Math.floor(Math.random() * maxTop));
+
+            // Aplicamos
+            elem.style.left = randomLeft + 'px';
+            elem.style.top = randomTop + 'px';
         }
 
         function showTaunt(x, y) {
-            // Crear el mensaje flotante
             const taunt = document.createElement('div');
             taunt.classList.add('taunt');
-            // Elegir frase aleatoria
             taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
             
-            // Posicionar donde ocurrió el click (o cerca del botón si es touch)
-            // Si x/y no están definidos (touch a veces falla), usar random centro
-            const finalX = x || (window.innerWidth / 2);
-            const finalY = y || (window.innerHeight / 2);
-
-            taunt.style.left = finalX + 'px';
-            taunt.style.top = finalY + 'px';
+            // Posicionar cerca del toque
+            taunt.style.left = x + 'px';
+            taunt.style.top = y + 'px';
             
             document.body.appendChild(taunt);
-            setTimeout(() => taunt.remove(), 1000);
+            setTimeout(() => taunt.remove(), 800);
         }
 
         function startParticles(char) {
@@ -290,50 +313,53 @@
                 p.classList.add('particle');
                 p.innerText = char;
                 p.style.left = Math.random() * 100 + 'vw';
-                p.style.top = -10 + 'vh';
+                p.style.top = -10 + 'vh'; // Empieza arriba
                 p.style.fontSize = Math.random() * 20 + 10 + 'px';
+                
+                // Animación CSS inyectada dinámicamente
                 p.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
                 
-                // Definir animación CSS en JS para no complicar el style block
-                const styleSheet = document.createElement("style");
-                styleSheet.innerText = `
-                    @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
-                `;
-                document.head.appendChild(styleSheet);
-
                 document.body.appendChild(p);
                 setTimeout(() => p.remove(), 5000);
             }, 300);
         }
+        
+        // Estilo de caída inyectado
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `@keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }`;
+        document.head.appendChild(styleSheet);
 
         function openModal() {
             document.getElementById('surpriseModal').classList.add('active');
-            // Vibración larga (éxito)
-            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
             createConfetti();
         }
 
         function createConfetti() {
-            // Explosión simple de emojis al ganar
-            for(let i=0; i<30; i++) {
+            for(let i=0; i<40; i++) {
                 setTimeout(() => {
                     const c = document.createElement('div');
                     c.innerText = '🎉';
                     c.style.position = 'fixed';
-                    c.style.left = '50%';
+                    c.style.left = '50%'; 
                     c.style.top = '50%';
                     c.style.fontSize = '2rem';
-                    c.style.transition = 'all 1s ease';
-                    c.style.zIndex = 200;
+                    c.style.transition = 'all 0.8s ease-out';
+                    c.style.zIndex = 3000;
                     document.body.appendChild(c);
                     
-                    // Dispersar
+                    // Dispersión radial aleatoria
+                    const angle = Math.random() * Math.PI * 2;
+                    const velocity = Math.random() * 300 + 100;
+                    const x = Math.cos(angle) * velocity;
+                    const y = Math.sin(angle) * velocity;
+
                     setTimeout(() => {
-                        c.style.transform = `translate(${Math.random()*400 - 200}px, ${Math.random()*400 - 200}px) scale(0)`;
+                        c.style.transform = `translate(${x}px, ${y}px) scale(0)`;
                     }, 50);
                     
-                    setTimeout(() => c.remove(), 1000);
-                }, i * 50);
+                    setTimeout(() => c.remove(), 900);
+                }, i * 30);
             }
         }
 
