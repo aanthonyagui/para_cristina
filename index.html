@@ -11,23 +11,25 @@
             margin: 0;
             padding: 0;
             width: 100vw;
-            height: 100vh;
-            overflow: hidden; /* IMPORTANTE: Evita barras de desplazamiento */
+            height: 100vh;      /* Fallback */
+            height: 100dvh;     /* Altura real en móviles */
+            overflow: hidden;   /* Cero scroll */
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Montserrat', sans-serif;
             transition: background 1s ease;
             user-select: none;
+            touch-action: none; /* Desactiva gestos del navegador para priorizar el juego */
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- FONDOS (Día / Tarde / Noche) --- */
+        /* --- FONDOS --- */
         body.morning { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
         body.sunset { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
         body.night { background: linear-gradient(135deg, #09203f 0%, #537895 100%); }
 
-        /* --- TARJETA CENTRAL --- */
+        /* --- TARJETA --- */
         .glass-card {
             background: rgba(255, 255, 255, 0.25);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -43,8 +45,7 @@
             transition: opacity 0.3s;
         }
         
-        /* Cuando empieza el juego, la tarjeta casi desaparece para dejar ver el fondo */
-        .glass-card.playing { opacity: 0.2; pointer-events: none; }
+        .glass-card.playing { opacity: 0.15; pointer-events: none; }
 
         h1 {
             font-family: 'Great Vibes', cursive;
@@ -67,37 +68,37 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        /* --- EL CORAZÓN MÓVIL --- */
+        /* --- CONTENEDOR DEL ÍCONO --- */
         .magic-btn-container {
-            height: 100px;
+            height: 120px; /* Espacio reservado */
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        /* --- EL ÍCONO (CORAZÓN) --- */
         .magic-icon {
-            font-size: 4.5rem; /* Tamaño grande */
-            width: 100px;      /* Ancho fijo para calcular bien la colisión */
-            height: 100px;     /* Alto fijo */
-            line-height: 100px;
+            font-size: 4.5rem; 
+            width: 100px;      
+            height: 100px;
+            line-height: 100px; /* Centrado vertical */
             text-align: center;
             cursor: pointer;
             filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
-            transition: transform 0.2s;
-            position: relative;
-            z-index: 1000; /* Siempre encima de todo */
+            position: relative; 
+            z-index: 1000;
             user-select: none;
+            /* Transición MUY rápida para que parezca que huye al instante */
+            transition: top 0.15s ease-out, left 0.15s ease-out;
         }
 
-        /* Clase para cuando el botón se mueve libremente */
         .magic-icon.moving {
-            position: fixed; /* Se sale del flujo */
-            transition: top 0.25s ease-out, left 0.25s ease-out; /* Movimiento suave */
+            position: fixed; /* Se libera del contenedor */
         }
 
         .hint { font-size: 0.8rem; color: #fff; opacity: 0.9; margin-top: 5px; }
 
-        /* --- MENSAJES DE BURLA (TAUNTS) --- */
+        /* --- MENSAJES BURLONES --- */
         .taunt {
             position: fixed;
             background: #ff4757;
@@ -115,10 +116,10 @@
             to { transform: translateY(-40px); opacity: 0; }
         }
 
-        /* --- MODAL DE VICTORIA --- */
+        /* --- MODAL --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.9);
             z-index: 2000;
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: 0.5s;
@@ -133,6 +134,7 @@
         .modal.active .modal-body { transform: scale(1); }
         .modal-text { font-size: 1.2rem; color: #333; margin: 20px 0; }
         
+        /* Partículas de fondo */
         .particle { position: fixed; top: -10vh; z-index: 1; opacity: 0.6; pointer-events: none; }
 
     </style>
@@ -155,14 +157,15 @@
             <h2 id="modalTitle">¡Te amo! 🏆</h2>
             <p id="modalText">...</p>
             <div style="font-size: 3rem;">🥰🎉💑</div>
+            <button onclick="location.reload()" style="margin-top:15px; background:#ff4757; color:white; border:none; padding:10px 20px; border-radius:20px;">Jugar otra vez</button>
         </div>
     </div>
 
     <script>
-        // ================= CONFIGURACIÓN =================
-        // FECHA DE INICIO:
-        const startDate = new Date(2025, 11, 29); // 29 de Diciembre de 2025
-        // =================================================
+        // === CONFIGURACIÓN ===
+        // Fecha de inicio (Año, Mes-1, Día)
+        const startDate = new Date(2025, 11, 29); 
+        // =====================
 
         const messages = [
             "Eres mi persona favorita en el universo.",
@@ -178,45 +181,38 @@
         const icons = ['❤️', '😻', '✨', '🧸', '🍓', '💎', '🌹', '🦄'];
 
         let attempts = 0;
-        const maxDodges = 5; // Huye 5 veces
+        const maxDodges = 5; 
         let isRunning = false;
 
         function init() {
-            // 1. Configurar Día y Hora
+            // 1. Configuración Visual (Día/Noche y Contador)
             const now = new Date();
             const hour = now.getHours();
             const body = document.body;
 
-            // Tema Horario
             body.classList.remove('morning', 'sunset', 'night');
             if (hour >= 6 && hour < 17) body.classList.add('morning');
             else if (hour >= 17 && hour < 20) body.classList.add('sunset');
             else body.classList.add('night');
 
-            // Contador de Días
             const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
             const dayNum = diff >= 0 ? diff + 1 : 1;
             
             document.getElementById('dayCounter').innerText = `Día ${dayNum}`;
-            
-            // Icono y Mensaje
             const iconChar = icons[(dayNum - 1) % icons.length];
             document.getElementById('mainIcon').innerText = iconChar;
             document.getElementById('modalText').innerText = messages[(dayNum - 1) % messages.length];
 
-            // Iniciar Lluvia de Fondo
+            // Iniciar fondo
             startParticles();
 
-            // 2. Iniciar Listeners de Juego (Touch y Mouse)
+            // 2. EVENTOS (Aquí está el arreglo del error)
             const icon = document.getElementById('mainIcon');
             
-            // Usamos 'touchstart' con {passive: false} para evitar scroll y reacción inmediata
-            icon.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Evita comportamiento doble
-                playGame(e.touches[0].clientX, e.touches[0].clientY);
-            }, {passive: false});
-
-            icon.addEventListener('mousedown', (e) => {
+            // Usamos 'pointerdown' que es universal y más seguro para vibración
+            icon.addEventListener('pointerdown', (e) => {
+                // Prevenir comportamientos extraños del navegador
+                e.preventDefault(); 
                 playGame(e.clientX, e.clientY);
             });
         }
@@ -228,10 +224,13 @@
                 // --- MODO HUIDA ---
                 if (!isRunning) {
                     isRunning = true;
-                    // Preparar para moverse
                     icon.classList.add('moving');
                     document.getElementById('card').classList.add('playing');
                     document.getElementById('instruction').innerText = "¡Atrápalo!";
+                    
+                    // Primer salto inmediato
+                    moveToSafePosition(icon);
+                    return; // No mostramos burla ni vibramos en el primer toque para evitar el error de "user gesture"
                 }
                 
                 // Mover a posición segura
@@ -241,45 +240,50 @@
                 showTaunt(x, y);
                 attempts++;
                 
-                if(navigator.vibrate) navigator.vibrate(50);
+                // Vibración (protegida para que no salte error en consola)
+                try {
+                    if(navigator.vibrate) navigator.vibrate(50);
+                } catch(err) {
+                    // Si falla la vibración, no pasa nada, el juego sigue
+                    console.log("Vibración bloqueada temporalmente");
+                }
 
             } else {
                 // --- MODO VICTORIA ---
                 document.getElementById('winModal').classList.add('active');
-                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
                 
-                // Efecto Confeti
+                try {
+                    if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                } catch(e){}
+                
                 for(let i=0; i<30; i++) setTimeout(createConfetti, i*50);
             }
         }
 
-        // --- LA SOLUCIÓN DEFINITIVA PARA QUE NO SE PIERDA ---
+        // --- LA LÓGICA DE LA JAULA SEGURA (Corrección para que no se pierda) ---
         function moveToSafePosition(elem) {
-            // 1. Obtener dimensiones reales de la ventana
+            // Márgenes de seguridad EXAGERADOS para asegurar visibilidad
+            const safeMargin = 60; // 60px lejos de cualquier borde
+            const iconSize = 100;  // Asumimos el tamaño del icono
+            
+            // Ancho y Alto de la ventana visible
             const winW = window.innerWidth;
             const winH = window.innerHeight;
 
-            // 2. Definir tamaño del elemento (Asumimos 100px para estar seguros aunque sea menos)
-            const elemSize = 100; 
+            // Coordenadas MÁXIMAS permitidas
+            const maxLeft = winW - iconSize - safeMargin;
+            const maxTop = winH - iconSize - safeMargin;
 
-            // 3. Margen de seguridad GRANDE (para evitar bordes curvos, barra de notificaciones, etc)
-            const padding = 40; 
+            // Coordenadas MÍNIMAS permitidas
+            const minLeft = safeMargin;
+            const minTop = safeMargin;
 
-            // 4. Calcular el área permitida (La "Jaula")
-            // El valor máximo de Left es: AnchoPantalla - TamañoElemento - Margen
-            const maxLeft = winW - elemSize - padding;
-            const maxTop = winH - elemSize - padding;
+            // Generar posiciones aleatorias DENTRO de los límites
+            // Math.max asegura que nunca sea negativo si la pantalla es muy pequeña
+            const randomLeft = Math.max(minLeft, Math.floor(Math.random() * (maxLeft - minLeft + 1)) + minLeft);
+            const randomTop = Math.max(minTop, Math.floor(Math.random() * (maxTop - minTop + 1)) + minTop);
 
-            // El valor mínimo es el margen
-            const minLeft = padding;
-            const minTop = padding;
-
-            // 5. Generar coordenadas aleatorias DENTRO de esos límites
-            // Math.max asegura que si el cálculo da negativo, use al menos el margen
-            const randomLeft = Math.floor(Math.random() * (maxLeft - minLeft + 1)) + minLeft;
-            const randomTop = Math.floor(Math.random() * (maxTop - minTop + 1)) + minTop;
-
-            // 6. Aplicar
+            // Aplicar nueva posición
             elem.style.left = randomLeft + 'px';
             elem.style.top = randomTop + 'px';
         }
@@ -288,9 +292,13 @@
             const t = document.createElement('div');
             t.className = 'taunt';
             t.innerText = taunts[Math.floor(Math.random() * taunts.length)];
-            // Validar que el texto no salga de pantalla
-            t.style.left = Math.min(x, window.innerWidth - 100) + 'px';
-            t.style.top = Math.min(y, window.innerHeight - 50) + 'px';
+            
+            // Si x o y son undefined (a veces pasa en primer click), usar centro
+            const posX = x || window.innerWidth / 2;
+            const posY = y || window.innerHeight / 2;
+
+            t.style.left = posX + 'px';
+            t.style.top = posY + 'px';
             document.body.appendChild(t);
             setTimeout(() => t.remove(), 800);
         }
@@ -302,10 +310,7 @@
                 p.innerText = ['💖','🌸','✨'][Math.floor(Math.random()*3)];
                 p.style.left = Math.random() * 100 + 'vw';
                 p.style.fontSize = Math.random() * 20 + 10 + 'px';
-                
-                // Inyectar animación
                 p.style.animation = `fall ${Math.random()*3+2}s linear forwards`;
-                
                 document.body.appendChild(p);
                 setTimeout(() => p.remove(), 5000);
             }, 500);
