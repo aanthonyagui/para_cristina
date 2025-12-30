@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Para Cristina Jamile ❤️</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;500;700&display=swap');
 
         body {
             margin: 0;
@@ -17,110 +17,102 @@
             align-items: center;
             font-family: 'Montserrat', sans-serif;
             transition: background 2s ease;
+            user-select: none; /* Evita seleccionar texto al jugar */
         }
 
-        /* --- ESTILOS POR HORA DEL DÍA (Fondos) --- */
-        /* Mañana (6am - 5pm): Claro, rosado, fresco */
-        body.morning {
-            background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
-        }
-        /* Tarde (5pm - 8pm): Atardecer, naranja, romántico */
-        body.sunset {
-            background: linear-gradient(to right, #fa709a 0%, #fee140 100%);
-        }
-        /* Noche (8pm - 6am): Oscuro, elegante, misterioso */
-        body.night {
-            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
-        }
+        /* --- FONDOS SEGÚN HORA --- */
+        body.morning { background: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%); }
+        body.sunset { background: linear-gradient(to right, #fa709a 0%, #fee140 100%); }
+        body.night { background: linear-gradient(to bottom, #09203f 0%, #537895 100%); }
 
-        /* --- TARJETA DE CRISTAL --- */
+        /* --- TARJETA --- */
         .glass-card {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.3);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.18);
-            padding: 40px 20px;
+            padding: 30px;
             text-align: center;
-            max-width: 90%;
-            width: 350px;
+            max-width: 85%;
+            width: 320px;
             position: relative;
             z-index: 10;
-            color: #fff;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        /* Ocultar tarjeta cuando el botón se escapa para dar espacio */
+        .glass-card.playing {
+            opacity: 0.5;
+            transform: scale(0.9);
         }
 
-        /* Ajustes de texto para que se lea bien siempre */
-        body.morning .glass-card { color: #555; text-shadow: none; background: rgba(255,255,255,0.7); }
-        
         h1 {
             font-family: 'Great Vibes', cursive;
-            font-size: 3.5rem;
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             margin: 10px 0;
-            line-height: 1.2;
         }
 
         .counter-badge {
-            background: rgba(255,255,255,0.9);
+            background: #fff;
             color: #d63384;
             padding: 5px 15px;
             border-radius: 50px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
             display: inline-block;
             margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .phrase-box {
-            font-style: italic;
-            font-size: 1.1rem;
-            min-height: 60px;
-            margin-top: 20px;
+        /* --- BOTÓN JUGUETÓN --- */
+        .magic-btn-container {
+            height: 100px;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
-        /* --- ICONO CENTRAL INTERACTIVO --- */
         .magic-icon {
-            font-size: 5rem;
+            font-size: 4.5rem;
             cursor: pointer;
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            user-select: none;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+            transition: transform 0.2s ease; /* Movimiento rápido */
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+            position: relative;
+            z-index: 20;
         }
-        .magic-icon:hover { transform: scale(1.2); }
-        .magic-icon:active { transform: scale(0.9) rotate(360deg); }
 
-        .hint { font-size: 0.7rem; opacity: 0.8; margin-bottom: 10px; }
+        /* Clase para cuando el botón se vuelve "loco" y sale de la tarjeta */
+        .magic-icon.running {
+            position: fixed; /* Se sale del flujo normal */
+        }
 
-        /* --- SISTEMA DE PARTÍCULAS (Animaciones Variadas) --- */
-        .particle {
+        .hint { font-size: 0.7rem; color: #fff; margin-top: -10px; opacity: 0.9; }
+
+        /* --- MENSAJES FLOTANTES (TAUNTS) --- */
+        .taunt {
             position: fixed;
+            color: #fff;
+            background: #ff4757;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
             pointer-events: none;
-            z-index: 1;
+            animation: floatUp 1s forwards;
+            z-index: 30;
+        }
+        @keyframes floatUp {
+            to { transform: translateY(-50px); opacity: 0; }
         }
 
-        /* Animación 1: Caída (Lluvia) */
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
-        /* Animación 2: Subida (Burbujas) */
-        @keyframes rise {
-            to { transform: translateY(-110vh) scale(1.5); opacity: 0; }
-        }
-        /* Animación 3: Flotar (Nubes/Sueños) */
-        @keyframes float {
-            0% { transform: translate(0, 0); }
-            50% { transform: translate(20px, 20px); }
-            100% { transform: translate(0, 0); }
-        }
+        /* --- PARTICULAS --- */
+        .particle { position: fixed; pointer-events: none; z-index: 1; opacity: 0.7; }
 
-        /* --- MODAL SORPRESA --- */
+        /* --- MODAL --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85);
@@ -130,182 +122,222 @@
         }
         .modal.active { opacity: 1; pointer-events: all; }
         .modal-body {
-            background: white; color: #333; padding: 30px; border-radius: 20px;
+            background: white; padding: 30px; border-radius: 20px;
             text-align: center; max-width: 80%; transform: scale(0.5); transition: 0.5s;
+            border: 4px solid #ff6b81;
         }
         .modal.active .modal-body { transform: scale(1); }
-        .close-modal {
-            margin-top: 15px; background: #ff4757; color: white; border: none;
-            padding: 10px 20px; border-radius: 50px; font-weight: bold; cursor: pointer;
-        }
-
+        .modal-text { font-size: 1.1rem; color: #333; margin: 20px 0; }
+        
     </style>
 </head>
 <body>
 
-    <div class="glass-card">
+    <div class="glass-card" id="card">
         <div id="dayCounter" class="counter-badge">Día 1</div>
-        
-        <div id="mainIcon" class="magic-icon">❤️</div>
-        <div class="hint">(Tócame)</div>
-
         <h1>Cristina Jamile</h1>
         
-        <div id="dailyMessage" class="phrase-box">
-            Calculando nuestro amor...
+        <div class="magic-btn-container">
+            <div id="mainIcon" class="magic-icon">❤️</div>
         </div>
+        <p class="hint" id="instruction">(Atrápame si puedes)</p>
     </div>
 
     <div class="modal" id="surpriseModal">
         <div class="modal-body">
-            <h2 id="modalTitle">¡Sorpresa! 🎁</h2>
-            <p id="modalText">Eres lo mejor que me ha pasado.</p>
-            <button class="close-modal" onclick="closeModal()">Te amo</button>
+            <h2 id="modalTitle">¡Me atrapaste! 🏆</h2>
+            <p id="modalText">...</p>
+            <div style="font-size: 2rem;">🥰🔥💑</div>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // 1. CONFIGURACIÓN DE FECHA (IMPORTANTE)
-        // ==========================================
-        // Cambia esto a la fecha de inicio.
-        // new Date(AÑO, MES-1, DÍA) -> Enero es 0, Diciembre es 11.
-        const startDate = new Date(2025, 11, 29); 
+        // ================= CONFIGURACIÓN =================
+        const startDate = new Date(2025, 11, 29); // AÑO, MES (0-11), DÍA
+        // =================================================
 
-        // ==========================================
-        // 2. BASE DE DATOS DE AMOR
-        // ==========================================
-        
-        // Frases para el texto principal (Se rotan cada día)
-        const phrases = [
-            "Eres la razón por la que sonrío al ver el celular.",
-            "Mi lugar favorito es dentro de tus abrazos.",
-            "Contigo, cada día es San Valentín.",
-            "No necesito pedir deseos, ya te tengo a ti.",
-            "Eres el verso más bonito de mi poema favorito.",
-            "Me gustas más que el café por las mañanas.",
-            "Tu amor es mi motor para ser mejor cada día.",
-            "Eres mi notificación favorita.",
-            "El mundo es más bonito cuando estás tú.",
-            "Te elijo hoy, mañana y siempre, Cristina."
+        // Frases finales (Premio)
+        const loveMessages = [
+            "Te ganaste mi corazón (otra vez).",
+            "Eres rápida, pero mi amor por ti es más rápido.",
+            "Me rindo ante ti, hoy y siempre.",
+            "Premio: Un beso enorme cuando nos veamos.",
+            "Eres mi jugadora favorita número 1.",
+            "Contigo pierdo la noción del tiempo.",
+            "¡Te amo Cristina Jamile!"
         ];
 
-        // Mensajes secretos para el Modal (Se rotan cada día)
-        const secrets = [
-            "PD: Me encantas cuando te ríes. 😍",
-            "Hoy te quiero un poquito más que ayer. 📈",
-            "Solo quería recordarte que eres hermosa. 🌹",
-            "Gracias por existir y estar en mi vida. ✨",
-            "Mándame una foto tuya, te extraño. 📸"
+        // Frases burlonas cuando el botón se escapa (Dinámicas)
+        const taunts = [
+            "¡Muy lenta! 😝", "¡Casi! 😂", "¡Aquí no! 💨", "¡Soy ninja! 🥷", 
+            "¡Intenta de nuevo! 😜", "¡Ups! 🙈", "¡Más rápido! ⚡"
         ];
 
-        // Iconos centrales que cambian cada día
-        const icons = ['❤️', '🌹', '🧸', '💌', '💍', '✨', '😻', '🦄'];
+        // Iconos Diarios
+        const icons = ['❤️', '🍩', '😻', '🪐', '🧸', '🍓', '💎', '🌸'];
+        // Partículas
+        const particles = ['✨', '💖', '🦋', '🍀', '🍬', '🌙'];
 
-        // Elementos que caen/vuelan (Partículas)
-        const particles = ['💖', '🌸', '🦋', '⭐', '🍃', '❄️', '🔥', '🍬'];
-
-        // ==========================================
-        // 3. LÓGICA DEL PROGRAMA
-        // ==========================================
+        // Variables de Estado
+        let attempts = 0;
+        const maxDodges = 5; // Cuántas veces huye
+        let isRunning = false;
 
         function init() {
             const now = new Date();
-            
-            // --- A. LÓGICA DE TIEMPO (HORA DEL DÍA) ---
             const hour = now.getHours();
+            
+            // 1. Tema Hora
             const body = document.body;
-            
-            // Eliminar clases anteriores
             body.classList.remove('morning', 'sunset', 'night');
+            if (hour >= 6 && hour < 17) body.classList.add('morning');
+            else if (hour >= 17 && hour < 20) body.classList.add('sunset');
+            else body.classList.add('night');
 
-            if (hour >= 6 && hour < 17) {
-                body.classList.add('morning'); // Día
-            } else if (hour >= 17 && hour < 20) {
-                body.classList.add('sunset'); // Atardecer
-            } else {
-                body.classList.add('night'); // Noche
-            }
-
-            // --- B. LÓGICA DE DÍAS (CUENTA) ---
+            // 2. Contador de Días
             const diffTime = Math.abs(now - startDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            const dayNumber = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
             
-            // Asegurar que empiece en 1
-            const dayNumber = diffDays > 0 ? diffDays : 1;
-
-            // --- C. SELECCIÓN DE CONTENIDO BASADO EN EL DÍA ---
-            // Usamos el operador % para rotar infinitamente las listas
-            const phraseIndex = (dayNumber - 1) % phrases.length;
-            const secretIndex = (dayNumber - 1) % secrets.length;
+            // 3. Selección de Contenido
+            document.getElementById('dayCounter').innerText = `Nivel ${dayNumber}`;
+            
             const iconIndex = (dayNumber - 1) % icons.length;
-            const particleIndex = (dayNumber - 1) % particles.length;
+            const msgIndex = (dayNumber - 1) % loveMessages.length;
+            const particleChar = particles[(dayNumber - 1) % particles.length];
+
+            const mainIcon = document.getElementById('mainIcon');
+            mainIcon.innerText = icons[iconIndex];
             
-            // Insertar textos
-            document.getElementById('dayCounter').innerText = `Día ${dayNumber} Juntos`;
-            document.getElementById('dailyMessage').innerText = phrases[phraseIndex];
-            document.getElementById('modalText').innerText = secrets[secretIndex];
-            document.getElementById('mainIcon').innerText = icons[iconIndex];
+            document.getElementById('modalText').innerText = loveMessages[msgIndex];
 
-            // --- D. ANIMACIÓN ÚNICA POR DÍA ---
-            // Determina el tipo de animación (0=Caer, 1=Subir, 2=Flotar)
-            const animationType = dayNumber % 3; 
-            const particleChar = particles[particleIndex];
+            // Iniciar fondo animado
+            startParticles(particleChar);
 
-            startParticleSystem(particleChar, animationType);
+            // 4. Lógica del Juego (Huir)
+            // Usamos 'mousedown' y 'touchstart' para que sea inmediato
+            mainIcon.addEventListener('touchstart', (e) => handleInteraction(e));
+            mainIcon.addEventListener('mousedown', (e) => handleInteraction(e));
         }
 
-        // --- SISTEMA DE PARTÍCULAS ---
-        function startParticleSystem(char, type) {
+        function handleInteraction(e) {
+            // Evitar doble disparo en algunos dispositivos
+            // e.preventDefault(); 
+            
+            const icon = document.getElementById('mainIcon');
+            const card = document.getElementById('card');
+
+            if (attempts < maxDodges) {
+                // MODO HUIR
+                if (!isRunning) {
+                    // La primera vez, lo sacamos del flujo normal para que pueda viajar por toda la pantalla
+                    icon.classList.add('running');
+                    card.classList.add('playing');
+                    document.getElementById('instruction').innerText = "¡Atrápalo!";
+                    isRunning = true;
+                }
+
+                moveButtonRandomly(icon);
+                showTaunt(e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY);
+                attempts++;
+                
+                // Vibración corta (error)
+                if (navigator.vibrate) navigator.vibrate(50);
+
+            } else {
+                // MODO ATRAPADO (Éxito)
+                openModal();
+                // Resetear juego para la próxima recarga
+                icon.classList.remove('running');
+                card.classList.remove('playing');
+            }
+        }
+
+        function moveButtonRandomly(elem) {
+            // Calcular posición aleatoria segura (dentro del viewport - margen)
+            const margin = 50;
+            const maxX = window.innerWidth - margin;
+            const maxY = window.innerHeight - margin;
+
+            const randomX = Math.floor(Math.random() * (maxX - margin)) + margin;
+            const randomY = Math.floor(Math.random() * (maxY - margin)) + margin;
+
+            elem.style.left = randomX + 'px';
+            elem.style.top = randomY + 'px';
+        }
+
+        function showTaunt(x, y) {
+            // Crear el mensaje flotante
+            const taunt = document.createElement('div');
+            taunt.classList.add('taunt');
+            // Elegir frase aleatoria
+            taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
+            
+            // Posicionar donde ocurrió el click (o cerca del botón si es touch)
+            // Si x/y no están definidos (touch a veces falla), usar random centro
+            const finalX = x || (window.innerWidth / 2);
+            const finalY = y || (window.innerHeight / 2);
+
+            taunt.style.left = finalX + 'px';
+            taunt.style.top = finalY + 'px';
+            
+            document.body.appendChild(taunt);
+            setTimeout(() => taunt.remove(), 1000);
+        }
+
+        function startParticles(char) {
             setInterval(() => {
                 const p = document.createElement('div');
                 p.classList.add('particle');
                 p.innerText = char;
-                
-                // Aleatoriedad
                 p.style.left = Math.random() * 100 + 'vw';
-                p.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                p.style.top = -10 + 'vh';
+                p.style.fontSize = Math.random() * 20 + 10 + 'px';
+                p.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
                 
-                // Configurar animación según el tipo
-                if (type === 0) {
-                    // Caída (Lluvia)
-                    p.style.top = '-10vh';
-                    p.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
-                } else if (type === 1) {
-                    // Subida (Burbujas)
-                    p.style.bottom = '-10vh';
-                    p.style.animation = `rise ${Math.random() * 4 + 3}s linear forwards`;
-                } else {
-                    // Flotar aleatorio (Estático/Ambiental)
-                    p.style.top = Math.random() * 100 + 'vh';
-                    p.style.animation = `float ${Math.random() * 5 + 3}s ease-in-out infinite`;
-                    p.style.opacity = Math.random();
-                }
+                // Definir animación CSS en JS para no complicar el style block
+                const styleSheet = document.createElement("style");
+                styleSheet.innerText = `
+                    @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+                `;
+                document.head.appendChild(styleSheet);
 
                 document.body.appendChild(p);
-
-                // Limpiar memoria
-                setTimeout(() => { p.remove(); }, 6000);
-            }, 400); // Frecuencia de creación
+                setTimeout(() => p.remove(), 5000);
+            }, 300);
         }
 
-        // --- INTERACCIÓN MODAL ---
-        const modal = document.getElementById('surpriseModal');
-        const mainIcon = document.getElementById('mainIcon');
-
-        mainIcon.addEventListener('click', () => {
-            modal.classList.add('active');
-            // Vibración si es celular
-            if (navigator.vibrate) navigator.vibrate(50);
-        });
-
-        function closeModal() {
-            modal.classList.remove('active');
+        function openModal() {
+            document.getElementById('surpriseModal').classList.add('active');
+            // Vibración larga (éxito)
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            createConfetti();
         }
 
-        // Iniciar todo
+        function createConfetti() {
+            // Explosión simple de emojis al ganar
+            for(let i=0; i<30; i++) {
+                setTimeout(() => {
+                    const c = document.createElement('div');
+                    c.innerText = '🎉';
+                    c.style.position = 'fixed';
+                    c.style.left = '50%';
+                    c.style.top = '50%';
+                    c.style.fontSize = '2rem';
+                    c.style.transition = 'all 1s ease';
+                    c.style.zIndex = 200;
+                    document.body.appendChild(c);
+                    
+                    // Dispersar
+                    setTimeout(() => {
+                        c.style.transform = `translate(${Math.random()*400 - 200}px, ${Math.random()*400 - 200}px) scale(0)`;
+                    }, 50);
+                    
+                    setTimeout(() => c.remove(), 1000);
+                }, i * 50);
+            }
+        }
+
         init();
-
     </script>
 </body>
 </html>
