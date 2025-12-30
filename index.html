@@ -10,48 +10,47 @@
         body {
             margin: 0;
             padding: 0;
-            height: 100vh;
-            overflow: hidden; /* Evita el scroll */
+            height: 100vh; /* Altura completa */
+            height: 100dvh; /* Altura dinámica para móviles modernos */
+            overflow: hidden; /* Prohibido el scroll */
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Montserrat', sans-serif;
-            transition: background 2s ease;
+            transition: background 1.5s ease;
             user-select: none;
-            -webkit-tap-highlight-color: transparent; /* Quita el cuadro azul al tocar en Android */
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- FONDOS SEGÚN HORA --- */
-        body.morning { background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); }
-        body.sunset { background: linear-gradient(to right, #fa709a 0%, #fee140 100%); }
-        body.night { background: linear-gradient(to bottom, #09203f 0%, #537895 100%); }
+        /* --- FONDOS DINÁMICOS (Hora del día) --- */
+        body.morning { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+        body.sunset { background: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%); }
+        body.night { background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); }
 
-        /* --- TARJETA --- */
+        /* --- TARJETA CENTRAL --- */
         .glass-card {
             background: rgba(255, 255, 255, 0.25);
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(6px);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.18);
-            padding: 30px;
+            padding: 30px 20px;
             text-align: center;
-            max-width: 85%;
-            width: 320px;
+            width: 300px;
+            max-width: 90%;
             position: relative;
             z-index: 10;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s;
         }
         
-        /* Cuando estamos jugando, la tarjeta se hace casi invisible para ver el botón */
-        .glass-card.playing {
-            opacity: 0.2; 
-        }
+        /* Al jugar, la tarjeta se desvanece para no estorbar */
+        .glass-card.playing { opacity: 0.3; pointer-events: none; }
 
         h1 {
             font-family: 'Great Vibes', cursive;
             font-size: 3rem;
             color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
             margin: 10px 0;
         }
 
@@ -60,306 +59,255 @@
             color: #d63384;
             padding: 5px 15px;
             border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: bold;
+            font-size: 0.85rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             display: inline-block;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        /* --- BOTÓN JUGUETÓN --- */
-        .magic-btn-container {
-            height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
+        /* --- EL CORAZÓN (PROTAGONISTA) --- */
         .magic-icon {
             font-size: 4.5rem;
             cursor: pointer;
-            transition: transform 0.1s ease; /* Movimiento muy rápido */
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
-            position: relative;
-            z-index: 999; /* Siempre encima de todo */
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
             display: inline-block;
+            position: relative; 
+            z-index: 9999; /* Siempre encima */
+            transition: transform 0.1s; /* Animación de pulsación */
+        }
+        
+        /* Cuando se mueve, le ponemos transición suave de posición */
+        .magic-icon.moving {
+            position: fixed;
+            transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .hint { font-size: 0.8rem; color: #fff; margin-top: 0; opacity: 0.9; }
+        .hint { font-size: 0.8rem; color: #fff; margin-top: 5px; opacity: 0.9; }
 
-        /* --- MENSAJES FLOTANTES (BURLAS) --- */
+        /* --- TEXTOS FLOTANTES (BURLAS) --- */
         .taunt {
             position: fixed;
-            color: #fff;
             background: #ff4757;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.9rem;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 12px;
             font-weight: bold;
+            font-size: 0.9rem;
             pointer-events: none;
-            animation: floatUp 0.8s forwards;
+            animation: floatFade 0.8s forwards;
             z-index: 50;
-            white-space: nowrap;
         }
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-40px) scale(1.1); opacity: 0; }
+        @keyframes floatFade {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-30px); opacity: 0; }
         }
 
-        /* --- PARTICULAS --- */
-        .particle { position: fixed; pointer-events: none; z-index: 1; opacity: 0.6; }
+        /* --- PARTÍCULAS DE FONDO --- */
+        .particle {
+            position: fixed;
+            top: -10vh;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+            animation: fall linear forwards;
+        }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
-        /* --- MODAL --- */
+        /* --- MODAL (MENSAJE FINAL) --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85);
-            z-index: 2000;
+            z-index: 10000;
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: 0.5s;
         }
         .modal.active { opacity: 1; pointer-events: all; }
+        
         .modal-body {
             background: white; padding: 30px; border-radius: 20px;
-            text-align: center; max-width: 80%; transform: scale(0.5); transition: 0.5s;
-            border: 4px solid #ff6b81;
-            box-shadow: 0 0 50px rgba(255, 107, 129, 0.5);
+            text-align: center; max-width: 80%;
+            transform: scale(0.8); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid #ff9a9e;
         }
         .modal.active .modal-body { transform: scale(1); }
-        .modal-text { font-size: 1.2rem; color: #333; margin: 20px 0; line-height: 1.5; }
         
+        .modal-text { font-size: 1.2rem; color: #333; margin: 15px 0; line-height: 1.5; }
+        .close-btn { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; }
+
     </style>
 </head>
 <body>
 
     <div class="glass-card" id="card">
         <div id="dayCounter" class="day-badge">Día 1</div>
-        
         <h1>Cristina Jamile</h1>
         
-        <div class="magic-btn-container">
+        <div style="height: 100px; display: flex; align-items: center; justify-content: center;">
             <div id="mainIcon" class="magic-icon">❤️</div>
         </div>
+        
         <p class="hint" id="instruction">(Tócame para ver el mensaje)</p>
     </div>
 
-    <div class="modal" id="surpriseModal">
+    <div class="modal" id="winModal">
         <div class="modal-body">
             <h2 id="modalTitle">¡Te amo! 🏆</h2>
-            <p id="modalText">...</p>
-            <div style="font-size: 2.5rem;">🥰🔥💑</div>
+            <p id="modalText">Mensaje cargando...</p>
+            <button class="close-btn" onclick="location.reload()">Ver de nuevo</button>
         </div>
     </div>
 
     <script>
         // ================= CONFIGURACIÓN =================
-        // FECHA DE INICIO: Año, Mes (Enero=0, Dic=11), Día
+        // FECHA DE INICIO: (Año, Mes-1, Día).
+        // Si hoy es 29 Dic, pon (2025, 11, 29) para que sea el Día 1.
         const startDate = new Date(2025, 11, 29); 
         // =================================================
 
-        // Frases para el Modal (Premio)
-        const loveMessages = [
-            "Eres mi casualidad favorita.",
-            "Me haces falta cada segundo que no estás.",
-            "Tu sonrisa es mi cargador de energía.",
-            "Te quiero para todos mis días.",
-            "Eres la mejor parte de mi vida.",
-            "Gracias por aguantarme y amarme.",
-            "¡Me encantas muchísimo, Cristina!",
-            "Eres perfecta tal y como eres."
+        const messages = [
+            "Eres mi casualidad más bonita.",
+            "Me haces falta en cada momento.",
+            "Tu sonrisa ilumina mi vida.",
+            "Te elijo a ti, hoy y siempre.",
+            "Haces que mi mundo sea perfecto.",
+            "Gracias por existir, Cristina.",
+            "No te cambio por nada.",
+            "Eres el amor de mi vida."
         ];
 
-        // Frases burlonas (Taunts)
-        const taunts = [
-            "¡Muy lenta! 😝", "¡Casi! 😂", "¡Aquí no! 💨", "¡Soy ninja! 🥷", 
-            "¡Intenta de nuevo! 😜", "¡Ups! 🙈", "¡Más rápido! ⚡"
-        ];
-
-        // Iconos Diarios
+        const taunts = ["¡Lenta! 😝", "¡Casi! 😂", "¡Aquí no! 💨", "¡Soy ninja! 🥷", "¡Ups! 🙈"];
         const icons = ['❤️', '🌹', '😻', '✨', '🧸', '🍓', '💎', '🦄'];
-        // Partículas
-        const particles = ['💖', '🌸', '🦋', '⭐', '🍃', '🔥'];
-
-        // Variables de Estado del Juego
+        
         let attempts = 0;
         const maxDodges = 5; // Huye 5 veces
         let isRunning = false;
 
         function init() {
+            // 1. CONFIGURAR DÍA Y HORA
             const now = new Date();
             const hour = now.getHours();
-            
-            // 1. Fondo según Hora
             const body = document.body;
+            
+            // Lógica de Hora
             body.classList.remove('morning', 'sunset', 'night');
             if (hour >= 6 && hour < 17) body.classList.add('morning');
             else if (hour >= 17 && hour < 20) body.classList.add('sunset');
             else body.classList.add('night');
 
-            // 2. Contador de Días
-            const diffTime = Math.abs(now - startDate);
-            let dayNumber = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            if (dayNumber < 1) dayNumber = 1; // Mínimo día 1
+            // Lógica de Conteo de Días
+            const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+            const dayNum = diff >= 0 ? diff + 1 : 1; // Si es fecha futura, muestra día 1
             
-            // Texto actualizado a "Día X"
-            document.getElementById('dayCounter').innerText = `Día ${dayNumber}`;
+            document.getElementById('dayCounter').innerText = `Día ${dayNum}`;
             
-            // 3. Selección de Contenido Diario (Ciclo)
-            const iconIndex = (dayNumber - 1) % icons.length;
-            const msgIndex = (dayNumber - 1) % loveMessages.length;
-            const particleChar = particles[(dayNumber - 1) % particles.length];
-
-            const mainIcon = document.getElementById('mainIcon');
-            mainIcon.innerText = icons[iconIndex];
-            
-            document.getElementById('modalText').innerText = loveMessages[msgIndex];
-
-            startParticles(particleChar);
-
-            // 4. Listeners para el juego
-            mainIcon.addEventListener('touchstart', handleInteraction, {passive: false});
-            mainIcon.addEventListener('mousedown', handleInteraction);
-        }
-
-        function handleInteraction(e) {
-            // Prevenimos comportamiento por defecto en touch para que sea rápido
-            if(e.type === 'touchstart') e.preventDefault();
+            // Seleccionar icono y mensaje del día (ciclo)
+            const iconChar = icons[(dayNum - 1) % icons.length];
+            const msgText = messages[(dayNum - 1) % messages.length];
             
             const icon = document.getElementById('mainIcon');
-            const card = document.getElementById('card');
-            
-            // Determinar coordenadas del toque/clic para poner el texto de burla
-            let clientX, clientY;
-            if (e.type === 'touchstart') {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
+            icon.innerText = iconChar;
+            document.getElementById('modalText').innerText = msgText;
 
+            // Iniciar partículas
+            createParticles();
+
+            // 2. ACTIVAR EL JUEGO
+            // Usamos 'touchstart' para móviles (reacción rápida) y 'mousedown' para PC
+            icon.addEventListener('touchstart', (e) => { e.preventDefault(); gameLogic(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
+            icon.addEventListener('mousedown', (e) => { gameLogic(e.clientX, e.clientY); });
+        }
+
+        function gameLogic(x, y) {
+            const icon = document.getElementById('mainIcon');
+            
             if (attempts < maxDodges) {
-                // --- MODO HUIR ---
+                // --- FASE DE HUIDA ---
                 if (!isRunning) {
-                    // Sacamos el botón del flujo normal para moverlo libremente
-                    icon.style.position = 'fixed';
-                    icon.style.transition = 'top 0.2s, left 0.2s'; // Suavizado
-                    card.classList.add('playing');
-                    document.getElementById('instruction').innerText = "¡Atrápalo!";
                     isRunning = true;
+                    // Preparamos el elemento para moverse libremente
+                    icon.classList.add('moving');
+                    icon.style.position = 'fixed'; 
+                    document.getElementById('card').classList.add('playing');
+                    document.getElementById('instruction').innerText = "¡Atrápalo!";
                 }
 
-                moveButtonSafely(icon);
-                showTaunt(clientX, clientY);
+                moveIconSafe(icon);
+                showTaunt(x, y);
                 attempts++;
                 
-                if (navigator.vibrate) navigator.vibrate(50);
+                if (navigator.vibrate) navigator.vibrate(50); // Vibrar error
 
             } else {
-                // --- MODO ATRAPADO ---
-                openModal();
-                // Restaurar estado visual (opcional, o dejarlo así hasta recargar)
-                card.classList.remove('playing');
-                icon.style.display = 'none'; // Ocultar botón al ganar
+                // --- FASE DE VICTORIA ---
+                // Detener movimiento y mostrar modal
+                document.getElementById('winModal').classList.add('active');
+                if (navigator.vibrate) navigator.vibrate([100, 50, 200]); // Vibrar éxito
+                throwConfetti();
             }
         }
 
-        // --- FUNCIÓN CLAVE: MOVIMIENTO SEGURO ---
-        function moveButtonSafely(elem) {
-            // Obtenemos dimensiones de la pantalla visible
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
+        function moveIconSafe(elem) {
+            // LÓGICA DE ZONA SEGURA (CRUCIAL)
+            const margin = 60; // Píxeles de seguridad desde el borde
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            
+            // Área disponible
+            const safeW = w - (margin * 2); 
+            const safeH = h - (margin * 2);
 
-            // Obtenemos tamaño del botón
-            // (Si es la primera vez, getBoundingClientRect nos da el tamaño real)
-            const rect = elem.getBoundingClientRect();
-            const btnW = rect.width;
-            const btnH = rect.height;
+            // Generar posición aleatoria DENTRO del área segura
+            // (margin + aleatorio entre 0 y ancho_seguro)
+            const newLeft = margin + Math.random() * safeW;
+            const newTop = margin + Math.random() * safeH;
 
-            // Margen de seguridad (padding) para que no toque el borde exacto
-            const padding = 20;
-
-            // Calculamos el área segura máxima
-            const maxLeft = viewportWidth - btnW - padding;
-            const maxTop = viewportHeight - btnH - padding;
-
-            // Generamos posición aleatoria dentro del área segura
-            // Math.max(padding, ...) asegura que no sea negativo ni 0
-            const randomLeft = Math.max(padding, Math.floor(Math.random() * maxLeft));
-            const randomTop = Math.max(padding, Math.floor(Math.random() * maxTop));
-
-            // Aplicamos
-            elem.style.left = randomLeft + 'px';
-            elem.style.top = randomTop + 'px';
+            elem.style.left = newLeft + 'px';
+            elem.style.top = newTop + 'px';
         }
 
         function showTaunt(x, y) {
-            const taunt = document.createElement('div');
-            taunt.classList.add('taunt');
-            taunt.innerText = taunts[Math.floor(Math.random() * taunts.length)];
-            
-            // Posicionar cerca del toque
-            taunt.style.left = x + 'px';
-            taunt.style.top = y + 'px';
-            
-            document.body.appendChild(taunt);
-            setTimeout(() => taunt.remove(), 800);
+            const t = document.createElement('div');
+            t.className = 'taunt';
+            t.innerText = taunts[Math.floor(Math.random() * taunts.length)];
+            t.style.left = x + 'px';
+            t.style.top = y + 'px';
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 800);
         }
 
-        function startParticles(char) {
+        function createParticles() {
             setInterval(() => {
                 const p = document.createElement('div');
-                p.classList.add('particle');
-                p.innerText = char;
+                p.className = 'particle';
+                p.innerText = ['💖', '✨', '🌸'][Math.floor(Math.random()*3)];
                 p.style.left = Math.random() * 100 + 'vw';
-                p.style.top = -10 + 'vh'; // Empieza arriba
-                p.style.fontSize = Math.random() * 20 + 10 + 'px';
-                
-                // Animación CSS inyectada dinámicamente
-                p.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
-                
+                p.style.fontSize = (Math.random() * 15 + 10) + 'px';
+                p.style.animationDuration = (Math.random() * 3 + 2) + 's';
                 document.body.appendChild(p);
                 setTimeout(() => p.remove(), 5000);
-            }, 300);
-        }
-        
-        // Estilo de caída inyectado
-        const styleSheet = document.createElement("style");
-        styleSheet.innerText = `@keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }`;
-        document.head.appendChild(styleSheet);
-
-        function openModal() {
-            document.getElementById('surpriseModal').classList.add('active');
-            if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
-            createConfetti();
+            }, 400);
         }
 
-        function createConfetti() {
-            for(let i=0; i<40; i++) {
+        function throwConfetti() {
+            for(let i=0; i<30; i++) {
+                const c = document.createElement('div');
+                c.innerText = '🎉';
+                c.style.position = 'fixed';
+                c.style.left = '50%'; c.style.top = '50%';
+                c.style.fontSize = '2rem';
+                c.style.zIndex = 20000;
+                c.style.transition = 'all 1s ease-out';
+                document.body.appendChild(c);
+                
                 setTimeout(() => {
-                    const c = document.createElement('div');
-                    c.innerText = '🎉';
-                    c.style.position = 'fixed';
-                    c.style.left = '50%'; 
-                    c.style.top = '50%';
-                    c.style.fontSize = '2rem';
-                    c.style.transition = 'all 0.8s ease-out';
-                    c.style.zIndex = 3000;
-                    document.body.appendChild(c);
-                    
-                    // Dispersión radial aleatoria
                     const angle = Math.random() * Math.PI * 2;
-                    const velocity = Math.random() * 300 + 100;
-                    const x = Math.cos(angle) * velocity;
-                    const y = Math.sin(angle) * velocity;
-
-                    setTimeout(() => {
-                        c.style.transform = `translate(${x}px, ${y}px) scale(0)`;
-                    }, 50);
-                    
-                    setTimeout(() => c.remove(), 900);
-                }, i * 30);
+                    const dist = 200 + Math.random() * 200;
+                    c.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(0)`;
+                    c.style.opacity = 0;
+                }, 50);
+                setTimeout(() => c.remove(), 1100);
             }
         }
 
